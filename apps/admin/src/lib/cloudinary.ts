@@ -57,6 +57,25 @@ export function signUpload(slug: string) {
 }
 
 /**
+ * Removes a book's cover file.
+ *
+ * Called when the book itself is deleted, because at that point the image is
+ * an orphan nothing can ever reference again. Best effort on purpose: a
+ * Cloudinary outage must not stop the owner deleting a book from their own
+ * catalogue.
+ */
+export async function destroyCover(slug: string) {
+  if (!cloudinaryConfigured) return;
+  try {
+    await cloudinary.uploader.destroy(`${FOLDER}/${slug}`, {
+      invalidate: true,
+    });
+  } catch {
+    // Nothing to do about it here, and nothing the owner could act on.
+  }
+}
+
+/**
  * The URL stored on the book.
  *
  * Not the raw `secure_url` Cloudinary returns: that serves the original file,

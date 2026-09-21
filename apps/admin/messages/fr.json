@@ -6,7 +6,8 @@
     "saveFailed": "Enregistrement impossible.",
     "saved": "Enregistré",
     "sessionExpired": "Session expirée — reconnectez-vous.",
-    "offline": "Serveur injoignable."
+    "offline": "Serveur injoignable.",
+    "cancel": "Annuler"
   },
   "brand": {
     "name": "BookOran31"
@@ -100,7 +101,12 @@
     "coverUploading": "Envoi…",
     "coverRemove": "Retirer la couverture",
     "coverType": "Format d’image non accepté : JPG, PNG ou WebP.",
-    "coverTooBig": "Image trop lourde : 8 Mo maximum."
+    "coverTooBig": "Image trop lourde : 8 Mo maximum.",
+    "dangerZone": "Zone sensible",
+    "deleteBook": "Supprimer ce livre",
+    "deleteHint": "Retire le livre, son stock et son historique de mouvements. Irréversible.",
+    "deleteConfirm": "Supprimer définitivement ce livre, son stock et tout son historique de mouvements ? Cette action ne peut pas être annulée.",
+    "deleteYes": "Oui, supprimer"
   },
   "sales": {
     "title": "Ventes",

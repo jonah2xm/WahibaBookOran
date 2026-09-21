@@ -486,6 +486,18 @@ refuses a URI that names no database, and refuses `--reset` against a
 non-local database without `--force`. It never creates orders, and
 `seed:demo` refuses a non-local database outright.
 
+### Deleting a book
+
+`DELETE /api/books/<slug>` refuses with 409 when the book appears in any
+order. An order's items carry their own title and price snapshots, so an old
+order still reads correctly without the book — but the records should not
+quietly lose the thing they point at, and a book that has ever sold wants
+hiding (`isActive: false`), not deleting. The refusal says so.
+
+With no order it really goes: the book, its stock movements (which have
+nothing left to explain) and its Cloudinary cover (an orphan nothing can
+reference again). The editor asks twice before calling it.
+
 ### Book covers
 
 The browser uploads straight to Cloudinary. `POST /api/uploads/signature`

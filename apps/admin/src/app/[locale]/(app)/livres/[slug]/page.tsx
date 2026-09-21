@@ -2,7 +2,7 @@
 
 import { use, useCallback, useEffect, useMemo, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
-import { Link } from "@/i18n/navigation";
+import { Link, useRouter } from "@/i18n/navigation";
 import { Loading, LoadFailed } from "@/components/Async";
 import { CoverUpload } from "@/components/CoverUpload";
 import { IconAlert, IconChevron } from "@/components/icons";
@@ -46,6 +46,7 @@ export default function BookEditorPage({
 }) {
   const { slug } = use(params);
   const locale = useLocale();
+  const router = useRouter();
   const t = useTranslations("editor");
   const tn = useTranslations("nav");
   const tc = useTranslations("common");
@@ -59,6 +60,8 @@ export default function BookEditorPage({
   const [missing, setMissing] = useState(false);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [saveError, setSaveError] = useState<string | null>(null);
+  const [confirmingDelete, setConfirmingDelete] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   const load = useCallback(async () => {
     setLoadError(null);
@@ -105,6 +108,24 @@ export default function BookEditorPage({
 
   const set = <K extends keyof Draft>(key: K, value: Draft[K]) =>
     setDraft((d) => (d ? { ...d, [key]: value } : d));
+
+  /**
+   * Deleting is refused server-side when the book appears in any order, and
+   * that refusal carries the reason — so it is shown rather than swallowed.
+   * Hiding the book is the right move in that case, which the message says.
+   */
+  async function remove() {
+    setSaveError(null);
+    setDeleting(true);
+    try {
+      await api.del(`/api/books/${slug}`);
+      router.replace("/livres");
+    } catch (e) {
+      setConfirmingDelete(false);
+      setSaveError(messageFor(e, tc("saveFailed")));
+      setDeleting(false);
+    }
+  }
 
   /**
    * The cover saves immediately rather than joining the draft.
@@ -387,6 +408,48 @@ export default function BookEditorPage({
             />
           </label>
         </div>
+      </section>
+
+      {/* danger zone. Deliberately last, visually separate, and two steps:
+          a book is deleted once and typed back in by hand. */}
+      <section className="mt-2 flex flex-col gap-2 border-t border-sand-deep px-4 pt-5">
+        <span className={label}>{t("dangerZone")}</span>
+        {confirmingDelete ? (
+          <div className="flex flex-col gap-3 rounded-card bg-danger/8 p-3">
+            <p className="text-caption text-ink">{t("deleteConfirm")}</p>
+            <div className="flex gap-2">
+              <button
+                type="button"
+                onClick={remove}
+                disabled={deleting}
+                className="h-11 flex-1 rounded-full bg-danger px-4 text-caption font-semibold text-white disabled:opacity-60"
+              >
+                {deleting ? tc("loading") : t("deleteYes")}
+              </button>
+              <button
+                type="button"
+                onClick={() => setConfirmingDelete(false)}
+                disabled={deleting}
+                className="h-11 flex-1 rounded-full border border-sand-deep bg-surface px-4 text-caption font-semibold"
+              >
+                {tc("cancel")}
+              </button>
+            </div>
+          </div>
+        ) : (
+          <>
+            <button
+              type="button"
+              onClick={() => setConfirmingDelete(true)}
+              className="h-11 w-fit rounded-full border border-danger/40 px-4 text-caption font-semibold text-danger"
+            >
+              {t("deleteBook")}
+            </button>
+            <span className="text-caption text-ink-muted">
+              {t("deleteHint")}
+            </span>
+          </>
+        )}
       </section>
 
       {saved ? (
