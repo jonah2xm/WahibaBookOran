@@ -13,3 +13,4 @@ dist/
 .turbo/
 coverage/
 next-env.d.ts
+*.tsbuildinfo
