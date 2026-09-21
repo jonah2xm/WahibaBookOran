@@ -14,10 +14,9 @@ type Signature = {
   cloudName: string;
 };
 
-/** Matches the server's deliveryUrl(). Same transforms, same order. */
-function deliveryUrl(cloudName: string, publicId: string, version?: number) {
-  const v = version ? `v${version}/` : "";
-  return `https://res.cloudinary.com/${cloudName}/image/upload/f_auto,q_auto,c_fill,ar_2:3,w_600/${v}${publicId}`;
+/** Matches the server's deliveryUrl(). Same transforms, no version. */
+function deliveryUrl(cloudName: string, publicId: string) {
+  return `https://res.cloudinary.com/${cloudName}/image/upload/f_auto,q_auto,c_fill,ar_2:3,w_600/${publicId}`;
 }
 
 const MAX_BYTES = 8 * 1024 * 1024;
@@ -87,14 +86,11 @@ export function CoverUpload({
         throw new Error(detail?.error?.message ?? tc("saveFailed"));
       }
 
-      const json = (await res.json()) as {
-        public_id: string;
-        version?: number;
-      };
+      const json = (await res.json()) as { public_id: string };
 
       // Built rather than taking `secure_url`: that one serves the original
       // file. This is the resized, reformatted delivery URL.
-      onUploaded(deliveryUrl(sig.cloudName, json.public_id, json.version));
+      onUploaded(deliveryUrl(sig.cloudName, json.public_id));
     } catch (e) {
       onError(messageFor(e, tc("saveFailed")));
     } finally {

@@ -86,8 +86,13 @@ export async function destroyCover(slug: string) {
  *   f_auto  the best format the browser accepts
  *   q_auto  quality chosen per image
  *   c_fill  crop to the 2:3 the design uses, rather than squashing
+ *
+ * No version segment. Cloudinary serves the current file for a public_id
+ * without one, and `invalidate: true` on upload purges the CDN copy. A
+ * versioned URL would 404 the moment the asset behind it is replaced — which
+ * is exactly what happens when a cover is re-uploaded and the PATCH that
+ * stores the new URL does not land.
  */
-export function deliveryUrl(publicId: string, version?: number) {
-  const v = version ? `v${version}/` : "";
-  return `https://res.cloudinary.com/${CLOUD_NAME}/image/upload/f_auto,q_auto,c_fill,ar_2:3,w_600/${v}${publicId}`;
+export function deliveryUrl(publicId: string) {
+  return `https://res.cloudinary.com/${CLOUD_NAME}/image/upload/f_auto,q_auto,c_fill,ar_2:3,w_600/${publicId}`;
 }
