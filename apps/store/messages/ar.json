@@ -1,0 +1,233 @@
+{
+  "brand": {
+    "name": "BookOran31",
+    "phone": "0555 31 24 08",
+    "city": "وهران"
+  },
+  "nav": {
+    "home": "الرئيسية",
+    "categories": "التصنيفات",
+    "search": "بحث",
+    "cart": "السلة",
+    "back": "رجوع"
+  },
+  "home": {
+    "tagline": "كتب مختارة، تُوصَّل إلى كامل الوطن.",
+    "freeShipping": "التوصيل مجاني ابتداءً من {amount}",
+    "cod": "الدفع عند الاستلام",
+    "new": "الجديد",
+    "bestSellers": "الأكثر مبيعاً",
+    "seeAll": "عرض الكل"
+  },
+  "trust": {
+    "cod": "الدفع عند الاستلام",
+    "coverage": "التوصيل إلى 58 ولاية",
+    "returns": "الإرجاع خلال 48 ساعة"
+  },
+  "book": {
+    "inStock": "متوفر",
+    "inStockShipped": "متوفر — يُشحن خلال 24 ساعة",
+    "lowStock": "بقيت {count} نسخ",
+    "outOfStock": "غير متوفر",
+    "addToCart": "أضف إلى السلة",
+    "author": "المؤلف",
+    "quantity": "الكمية",
+    "total": "المجموع",
+    "summary": "ملخّص",
+    "sameAuthor": "للمؤلف نفسه",
+    "discount": "−{percent}%",
+    "specs": {
+      "publisher": "الناشر",
+      "pages": "الصفحات",
+      "language": "اللغة",
+      "isbn": "ISBN",
+      "weight": "الوزن"
+    },
+    "lang": {
+      "fr": "الفرنسية",
+      "ar": "العربية"
+    },
+    "delivery": {
+      "title": "التوصيل المقدَّر إلى {city}",
+      "rates": "{home} إلى المنزل · {desk} نقطة الاستلام",
+      "note": "يظهر السعر الدقيق فور اختيار البلدية."
+    }
+  },
+  "cart": {
+    "title": "سلّتي",
+    "subtotal": "المجموع الفرعي",
+    "delivery": "التوصيل",
+    "deliveryNextStep": "تُحتسب في الخطوة التالية",
+    "freeShipHint": "بقي {amount} للحصول على توصيل مجاني.",
+    "freeShipReached": "التوصيل مجاني — وصلت إلى الحد.",
+    "checkout": "إتمام الطلب",
+    "remove": "حذف",
+    "removeItem": "حذف {title} من السلة",
+    "blockedByStock": "احذف هذا العنصر للمتابعة.",
+    "empty": {
+      "title": "سلّتك فارغة",
+      "body": "تصل إصدارات جديدة كل أسبوع — ابدأ من هناك.",
+      "primary": "اكتشف الجديد",
+      "secondary": "تصفّح التصنيفات"
+    }
+  },
+  "common": {
+    "currency": "DA",
+    "language": "ع"
+  },
+  "category": {
+    "count": "{count, plural, zero {# كتاب} one {كتاب واحد} two {كتابان} few {# كتب} many {# كتاباً} other {# كتاب}}",
+    "sort": "ترتيب",
+    "price": "السعر",
+    "inStock": "متوفر",
+    "language": "اللغة",
+    "filtersLabel": "المرشّحات:",
+    "all": "كل الكتب",
+    "browse": "تصفّح"
+  },
+  "filters": {
+    "newest": "الأحدث",
+    "priceAsc": "السعر تصاعدياً",
+    "priceDesc": "السعر تنازلياً",
+    "price": "السعر",
+    "reset": "إعادة ضبط",
+    "apply": "عرض {count} كتاباً",
+    "min": "الحد الأدنى",
+    "max": "الحد الأقصى",
+    "close": "إغلاق",
+    "alphaAsc": "العنوان أ → ي",
+    "alphaDesc": "العنوان ي → أ"
+  },
+  "search": {
+    "placeholder": "عنوان، مؤلف، موضوع…",
+    "cancel": "إلغاء",
+    "suggestions": "اقتراحات",
+    "recent": "عمليات بحث سابقة",
+    "clear": "مسح",
+    "results": "النتائج · {count}",
+    "emptyTitle": "لا يوجد كتاب لـ «{query}»",
+    "emptyBody": "تحقّق من الإملاء أو تصفّح هذه الأقسام.",
+    "backHome": "العودة إلى الرئيسية"
+  },
+  "checkout": {
+    "title": "إتمام الطلب",
+    "step1": "1 · المعلومات",
+    "step2": "2 · التوصيل",
+    "step3": "3 · الملخّص",
+    "stepShort1": "المعلومات",
+    "stepShort2": "التوصيل",
+    "stepShort3": "الملخّص",
+    "fullName": "الاسم الكامل",
+    "fullNamePh": "أمين بلقاسم",
+    "phone": "رقم الهاتف",
+    "phonePh": "0X XX XX XX XX",
+    "altPhone": "رقم ثانٍ — اختياري",
+    "wilaya": "الولاية",
+    "commune": "البلدية",
+    "choose": "اختر",
+    "communesHint": "{count} بلدية — البحث بالاسم.",
+    "searchPlaceholder": "بحث…",
+    "noMatch": "لا نتيجة",
+    "close": "إغلاق",
+    "home": "إلى المنزل",
+    "homeDelay": "من 2 إلى 4 أيام",
+    "desk": "نقطة الاستلام",
+    "deskDelay": "من 1 إلى 3 أيام",
+    "address": "العنوان الكامل",
+    "addressPh": "الشارع، العمارة، الطابق، نقطة استدلال",
+    "center": "مركز يليدين",
+    "feeTitle": "سعر التوصيل",
+    "feeIdle": "اختر بلديتك لرؤية السعر الدقيق.",
+    "feeLoading": "جارٍ الحساب…",
+    "feeConfirmed": "سعر يليدين مؤكَّد",
+    "feeFree": "التوصيل مجاني",
+    "feeUnavailable": "السعر غير متوفر لهذه البلدية — نؤكّده عبر الهاتف.",
+    "callMe": "اطلب مكالمة",
+    "subtotal": "المجموع الفرعي",
+    "delivery": "التوصيل",
+    "total": "المجموع",
+    "toConfirm": "قيد التأكيد",
+    "codTitle": "تدفع عند الاستلام",
+    "codBody": "نقداً لعامل التوصيل. لا دفع عبر الإنترنت.",
+    "agreePre": "أوافق على ",
+    "agreeLink": "شروط البيع",
+    "agreePost": " وسياسة الإرجاع.",
+    "totalDue": "المبلغ المستحق",
+    "confirm": "تأكيد الطلب",
+    "missingFields": "أكمل معلوماتك وعنوان التوصيل.",
+    "mustAgree": "يجب أن توافق على شروط البيع.",
+    "sending": "جارٍ الإرسال…",
+    "orderFailed": "تعذّر إرسال الطلب. أعد المحاولة.",
+    "noLongerAvailable": "أحد الكتب في سلّتك لم يعد متوفراً. ارجع إلى السلّة لحذفه."
+  },
+  "confirmation": {
+    "title": "تم تسجيل الطلب",
+    "body": "سنتصل بك خلال اليوم للتأكيد قبل الشحن.",
+    "orderNumber": "رقم الطلب",
+    "copy": "نسخ",
+    "copied": "تم النسخ",
+    "items": "{count} عناصر",
+    "deliveryTo": "التوصيل — {place}",
+    "toPay": "يُدفع لعامل التوصيل",
+    "track": "تتبّع طلبي",
+    "keepShopping": "مواصلة التسوّق",
+    "toConfirm": "قيد التأكيد",
+    "noOrder": "لا يوجد طلب حديث.",
+    "feePending": "سيتم تأكيد مصاريف التوصيل لبلديتك عبر الهاتف."
+  },
+  "tracking": {
+    "title": "تتبّع الطلب",
+    "orderNumber": "رقم الطلب",
+    "phone": "الهاتف",
+    "submit": "بحث",
+    "notFound": "لا يوجد طلب يطابق هذا الرقم وهذا الهاتف.",
+    "yalidine": "تتبّع يليدين",
+    "copy": "نسخ",
+    "copied": "تم النسخ",
+    "pending": "قيد الانتظار",
+    "status": {
+      "registered": "تم تسجيل الطلب",
+      "confirmed": "تم تأكيد الطلب",
+      "packed": "تم التحضير",
+      "shipped": "تم الشحن — قيد التوصيل",
+      "delivered": "تم التسليم"
+    },
+    "statusShort": {
+      "registered": "مسجّل",
+      "confirmed": "مؤكَّد",
+      "packed": "محضَّر",
+      "shipped": "تم الشحن",
+      "delivered": "تم التسليم"
+    },
+    "prepare": "جهّز {amount} نقداً لعامل التوصيل.",
+    "awaitingCall": "سنتصل بك للتأكيد. يظهر تتبّع يليدين فور الشحن."
+  },
+  "legal": {
+    "title": "شروط البيع",
+    "toc": "المحتويات"
+  },
+  "errors": {
+    "notFoundCode": "404",
+    "notFoundTitle": "هذه الصفحة غادرت الرفّ",
+    "notFoundBody": "قد يكون الرابط قديماً. عد إلى الرئيسية لتجد الكتالوج.",
+    "offlineTitle": "أنت غير متّصل",
+    "offlineBody": "سلّتك محفوظة وستُزامَن عند عودة الشبكة.",
+    "errorTitle": "حدث خطأ",
+    "errorBody": "أعد المحاولة بعد لحظات أو اتصل بنا على {phone}.",
+    "retry": "إعادة المحاولة",
+    "call": "اتصال",
+    "home": "العودة إلى الرئيسية"
+  },
+  "books": {
+    "title": "كل الكتب",
+    "searchPlaceholder": "ابحث عن كتاب أو مؤلف…",
+    "count": "{count, plural, zero {# كتاب} one {كتاب واحد} two {كتابان} few {# كتب} many {# كتاباً} other {# كتاب}}",
+    "noResultsTitle": "لا يوجد كتاب مطابق",
+    "noResultsBody": "جرّب كلمة أخرى أو وسّع المرشّحات.",
+    "clearAll": "مسح الكل",
+    "all": "الكل",
+    "sortLabel": "ترتيب",
+    "priceAny": "السعر",
+    "priceRange": "{min} – {max}"
+  }
+}

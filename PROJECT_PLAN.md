@@ -1,0 +1,456 @@
+# Online Bookstore — Project Plan
+
+Mobile-first Algerian book shop with Yalidine delivery, plus a separate admin back-office.
+Status: **Both apps run on MongoDB end to end.** The storefront reads its
+catalogue, settings and conditions from the database, places orders through
+`POST /api/orders` with every number recomputed server-side, and tracks them
+by number + phone. The admin reads and writes through its own API, with login
+on `adminUsers` + bcrypt. No seed files, no localStorage stubs left in either
+app — only the cart, which is where a guest cart belongs.
+
+Verified end to end: an order placed in the storefront appears in the admin
+pipeline; moving it to *expédiée* there decrements stock through the ledger
+and changes what the customer sees on the tracking page.
+
+**What is left: Yalidine.** The delivery fee still comes from the zone table
+in `apps/store/src/lib/geo.ts`, there is no parcel creation and no label, and
+the communes list is a stub. All of it is blocked on the API credentials.
+A6 Frais de production is out of scope.
+Store runs on :3110, admin on :3111 (launch.json entries `bookoran-store` and
+`bookoran-admin`).
+
+Browsing diverges from the board on purpose: the home category rail, the /categories
+index and the /recherche screen were removed in favour of one **Tous les livres**
+(/livres) page carrying search, category + price filters and five sorts, with state in
+the URL. Board screens S2, S2b and S3 no longer describe the built app.
+
+Built against the Claude Design board `BookOran31.dc.html`
+(project `b24adc68-6601-4e56-99d5-44e01595b888`). Still stubbed, all flagged in-file:
+
+- Catalogue and dashboard figures are seed data (`apps/store/src/data/catalogue.ts`,
+  `apps/admin/src/data/stub.ts`). Mongo replaces both in Phase 1.
+- Checkout quotes against `POST /api/quote`, which prices from a local zone table.
+  **That route and `apps/store/src/lib/geo.ts` are the only two files Yalidine touches.**
+- Orders live in localStorage, not a database.
+- Admin auth is one env account in `apps/admin/.env.local`, compared in plain text.
+  Phase 1 moves it to `adminUsers` + bcrypt. **Do not deploy the admin before that.**
+- Conditions sections 4–5 are drafts I wrote; the owner must review them.
+
+---
+
+## 1. Decisions already locked
+
+| Area | Decision |
+|---|---|
+| Repo | Monorepo: `apps/store`, `apps/admin`, `packages/db`, `packages/ui` |
+| Customer auth | None — guest checkout (name + phone). Tracking by order number + phone |
+| Languages | French + Arabic, switchable, full RTL |
+| Payment | Cash on delivery only. Yalidine collects and remits later |
+| Delivery | Yalidine — live fee quote at checkout |
+| Palette | Beige + pink + white + black |
+| Primary target | Phone screens. Desktop is a graceful upgrade, not the reference |
+
+---
+
+## 2. Stack
+
+- **Next.js 15** (App Router, Server Components) + **TypeScript**
+- **Tailwind CSS v4** with CSS-variable design tokens (see `DESIGN_BRIEF.md`)
+- **MongoDB Atlas** + **Mongoose**, models shared from `packages/db`
+- **next-intl** for fr/ar with `dir` switching
+- **NextAuth (credentials)** for admin only
+- **Zod** for every request body and every Yalidine response
+- **Cloudinary** (or UploadThing) for book covers — never store images in Mongo
+- **Vercel** for both apps, two projects pointing at the same repo
+- **npm workspaces** (pnpm is not installed on this machine)
+
+### Non-negotiable engineering rules
+
+1. Money is stored as **integer centimes of DZD**. No floats anywhere.
+2. Prices, delivery fees and totals are **recomputed server-side at order creation**. The client's numbers are display-only and never trusted.
+3. Yalidine credentials live **only** in server code. No `NEXT_PUBLIC_` prefix, ever.
+4. All Yalidine reference data (wilayas, communes, centers, fee tables) is **cached in Mongo**. Their API is rate-limited; we do not call it per keystroke.
+5. Every user-facing string comes from a translation file. No hardcoded French in JSX.
+6. No `left`/`right` in CSS — logical properties only (`ms`, `me`, `ps`, `pe`, `start`, `end`), or RTL becomes a rewrite.
+
+---
+
+## 3. Repo structure
+
+```
+bookstore/
+├── apps/
+│   ├── store/                 # customer storefront
+│   │   ├── app/[locale]/...
+│   │   ├── app/api/...
+│   │   └── messages/{fr,ar}.json
+│   └── admin/                 # back-office
+│       ├── app/[locale]/...
+│       └── app/api/...
+├── packages/
+│   ├── db/                    # BUILT — mongoose models, connection, seed
+│   │   ├── src/models/        # Category Book StockMovement Order
+│   │   │                      # AgreementSection AdminUser Settings
+│   │   │                      # YalidineCache Counter
+│   │   ├── src/stock.ts       # recordMovement + reconciliation
+│   │   ├── src/orderNumber.ts # BO-YYMM-NNNN from an atomic counter
+│   │   └── src/seed/          # canonical catalogue + agreement + runner
+│   ├── ui/                    # shared components + design tokens (todo)
+│   └── yalidine/              # API client, cache layer, fee calculator (todo)
+├── PROJECT_PLAN.md
+└── DESIGN_BRIEF.md
+```
+
+### Seeding
+
+```bash
+cp .env.local.example .env.local     # fill in MONGODB_URI
+npm run seed --workspace @bookoran/db
+```
+
+Idempotent — every write is an upsert on `slug` / `key` / `_id`, so re-running
+changes nothing. `--reset` empties the catalogue, the ledger, the agreement,
+the settings and the counters first; it refuses a non-localhost URI without
+`--force`. Orders and admin users are never cleared: one is the business's
+records, the other its credentials.
+
+The seed gives each book an opening `purchase_in` movement equal to its seed
+stock, so the ledger explains the count from day one and the first
+reconciliation run does not zero it. On a re-run it does not write a second
+opening balance, and it never resets a stock the owner has since adjusted.
+
+`SEED_ADMIN_PASSWORD` is optional: left empty, the script generates a password
+and prints it once. It never falls back to a fixed default.
+
+---
+
+## 4. Data model
+
+Bilingual fields are `{ fr: string; ar?: string }` and fall back to `fr` when `ar` is empty.
+This lets you launch in French and fill Arabic in later with no migration.
+
+### categories
+```
+_id, slug, name: {fr, ar}, description: {fr, ar},
+icon, sortOrder, isActive
+```
+
+### books
+```
+_id, slug,
+title: {fr, ar}, author: {fr, ar}, summary: {fr, ar},
+categoryIds: [ObjectId],        // a book can sit in several
+isbn, publisher, publishedYear, pageCount, bookLanguage,
+coverUrl, galleryUrls: [],
+priceDzd: int,                  // centimes
+compareAtPriceDzd: int | null,  // for strike-through
+weightGrams: int,               // REQUIRED — drives the Yalidine surcharge
+dimensionsCm: { l, w, h },
+stockOnHand: int,               // denormalized from stockMovements
+stockReserved: int,             // held by confirmed-but-unshipped orders
+lowStockThreshold: int,
+isActive, isFeatured, isNewArrival, isBestSeller,
+createdAt, updatedAt
+```
+
+`isNewArrival`, not `isNew`: `isNew` is a reserved Mongoose path (`doc.isNew`
+is its own "not yet saved" flag) and shadowing it breaks `save()`.
+
+### stockMovements — append-only ledger, never edited
+```
+_id, bookId, type, quantity (signed),
+reason, orderId?, createdBy, createdAt
+```
+type is one of: `purchase_in`, `sale_out`, `return_in`, `damage_out`, `adjustment`
+
+`books.stockOnHand` is a cached sum. A nightly job recomputes it from the ledger and flags any book where the two disagree.
+
+### orders
+```
+_id, orderNumber,               // human-readable, e.g. BO-2609-0143
+status, statusHistory: [{ status, at, by, note }],
+customer: { fullName, phone, altPhone? },
+delivery: {
+  method,                       // home | stopdesk
+  wilayaId, wilayaName, communeId, communeName,
+  address?, stopdeskCenterId?, stopdeskName?
+},
+items: [{ bookId, titleSnapshot, priceSnapshot, quantity }],
+totals: { subtotal, deliveryFee, discount, grandTotal },   // centimes
+yalidine: { tracking?, labelUrl?, lastStatus?, lastSyncedAt? },
+payment: { method: cod, collected: bool, collectedAt?, remittedAt? },
+locale, notes, createdAt, updatedAt
+```
+
+Snapshots matter: an order must still show what the customer actually paid even after you change that book's price next month.
+
+`orderNumber` is `BO-YYMM-NNNN`, minted by `nextOrderNumber()` from an atomic
+`$inc` on a per-month counter — not from a count of existing orders, which two
+simultaneous checkouts would both read and then collide on the unique index.
+The `BO-` prefix is what the board, both apps and the tracking page already
+show. The storefront still generates a random `BO-####` into localStorage; that
+stub and the `BO-0000` placeholder on /suivi change over when order creation
+moves to the API.
+
+### agreementSections — the user-agreement editor
+```
+_id, key, title: {fr, ar}, points: [{ fr, ar }], sortOrder, isActive, updatedAt
+```
+Rendered as `<ul><li>` on the storefront, edited as a reorderable list in admin.
+
+### settings — one document, `_id: "store"`
+```
+_id: "store", storeName, phone,
+originWilayaId, originWilayaName,
+freeShippingThresholdDzd: int, overweightRateDzd: int, freeKg: int,
+stopdeskByDefault: bool, updatedAt
+```
+Admin A10 edits it; the quote route reads it instead of the constants in
+`apps/store/src/lib/geo.ts` and `apps/store/src/data/catalogue.ts`.
+
+### counters — atomic sequences
+```
+_id (e.g. "order:2609"), seq: int
+```
+
+### adminUsers
+```
+_id, email, passwordHash, name, role (owner | staff), isActive, lastLoginAt
+```
+
+`passwordHash` is bcrypt at cost 12 and is `select: false`, so it cannot reach
+a session, an API response or a log without being asked for by name.
+`verifyAdminPassword()` hashes even when the e-mail is unknown, so a wrong
+address and a wrong password take the same time. This replaces the plaintext
+`===` check against env vars that A1 uses today — **that check must not reach
+production.**
+
+### yalidineCache
+```
+_id, kind (wilayas | communes | centers | fees), key, payload, fetchedAt, ttlHours
+```
+
+---
+
+## 5. Order lifecycle
+
+```
+pending ──confirm──▶ confirmed ──pack──▶ packed ──ship──▶ shipped
+   │                     │                                   │
+   │                     │                        ┌──────────┴──────────┐
+   └──cancel──▶ cancelled ◀──cancel───────────    ▼                     ▼
+                                              delivered            returned
+                                                  │                     │
+                                                  ▼                     ▼
+                                              remitted             restocked
+```
+
+- **pending** — customer submitted. Stock is *not* touched yet; with COD a real share of orders never confirm.
+- **confirmed** — you phoned the customer. Stock moves into `stockReserved`.
+- **packed** — physically ready to hand over.
+- **shipped** — parcel exists at Yalidine, tracking stored, `sale_out` movement written.
+- **delivered** — Yalidine says delivered. Cash collected by them, not yet by you.
+- **remitted** — money actually in your account. **Only this status counts as revenue.**
+- **returned** — `return_in` movement, stock comes back, the delivery fee is still a real loss.
+
+`delivered ≠ paid` is the single most important thing this model gets right.
+
+Enforced in `packages/db/src/orders.ts`: `applyOrderStatus()` owns the legal
+transitions and their stock effects, and an illegal jump is refused with the
+moves that *are* available. Cancelling a confirmed or packed order releases
+the reservation; cancelling a pending one has nothing to release, so it
+writes no compensating movement for stock that never left.
+
+---
+
+## 6. Yalidine integration
+
+> Assumed base `https://api.yalidine.app/v1/` with `X-API-ID` / `X-API-TOKEN` headers.
+> **To be verified against your actual account docs before Phase 3.**
+
+| Need | Endpoint | Cache |
+|---|---|---|
+| Wilaya list | `GET /wilayas` | 30 days in Mongo |
+| Commune list | `GET /communes?wilaya_id=` | 30 days |
+| Stopdesk centers | `GET /centers?wilaya_id=` | 7 days |
+| Delivery fee | `GET /deliveryfees?from_wilaya_id=&to_wilaya_id=` | 24 h |
+| Create parcel | `POST /parcels` | never |
+| Track parcel | `GET /parcels/{tracking}` | polled |
+
+### Fee calculation (server-side, `packages/yalidine/quote.ts`)
+
+```
+base      = home ? commune.home_fee : commune.desk_fee
+billable  = max(ceil(totalWeightGrams / 1000), volumetricWeight)
+surcharge = billable > FREE_KG ? (billable - FREE_KG) * OVERWEIGHT_RATE : 0
+fee       = base + surcharge - (subtotal >= FREE_SHIP_THRESHOLD ? base : 0)
+```
+
+`FREE_KG`, `OVERWEIGHT_RATE` and `FREE_SHIP_THRESHOLD` live in a `settings` document so you can change them without a deploy.
+
+### Failure policy
+
+If Yalidine is down or rate-limits us at checkout: serve the **last cached fee** for that commune and mark the quote `stale`. If no cached fee exists at all, let the order through with `deliveryFee = null` and a "à confirmer par téléphone" note. **Never block a sale on their uptime.**
+
+### Status sync
+
+A Vercel cron every 30 minutes pulls tracking status for every order in `shipped`, updates `yalidine.lastStatus`, and auto-advances to `delivered` / `returned`.
+
+---
+
+## 7. API surface
+
+**Store** — `apps/store/src/app/api/` — BUILT
+```
+GET  /api/catalogue             books + categories + public settings, for the cart
+POST /api/quote                 { items, wilayaId, communeId, method } -> fee breakdown
+POST /api/orders                places the order
+GET  /api/orders/track          ?number=&phone=  (both required, both must match)
+```
+
+Server components read `src/lib/catalogue.ts` directly — the home rails, the
+listing, a book page, the conditions. Only the cart calls `/api/catalogue`,
+because it runs in the browser and holds nothing but slugs.
+
+`POST /api/orders` takes slugs, quantities, an address and a delivery choice.
+**Every price, weight, fee and total is recomputed from the catalogue and the
+settings**; the numbers the browser showed are display only. It shares
+`src/lib/quote.ts` with `/api/quote`, so the figure quoted and the figure
+charged cannot drift apart. A basket line that sold out in the meantime is
+dropped and reported back rather than silently priced.
+
+Stock is **not** decremented at checkout. A COD order is a request, not a
+sale: copies are reserved on confirmation and leave stock on shipment (§5).
+
+`/api/orders/track` needs the number **and** the phone. Order numbers are
+sequential, so a number alone would let anyone walk the range and read
+customers' names and addresses. A wrong pair returns the same 404 as an
+unknown number, so it cannot be used to discover which numbers exist.
+
+Not built, all waiting on Yalidine credentials: `/api/geo/*` served from the
+cached API response instead of the stub in `lib/geo.ts`, parcel creation and
+labels.
+
+**Admin** — `apps/admin/src/app/api/` — BUILT
+```
+GET   /api/dashboard                    the A2 tiles, computed
+GET   /api/books                        catalogue + categories
+POST  /api/books
+GET   /api/books/[slug]
+PATCH /api/books/[slug]                 stockOnHand is NOT accepted here
+GET   /api/stock/[slug]                 on hand, reserved, movement history
+POST  /api/stock/[slug]/movements       an adjustment, reason required
+GET   /api/orders                       ?status= , plus counts per column
+GET   /api/orders/[orderNumber]
+PATCH /api/orders/[orderNumber]         status transition + its stock effects
+GET   /api/agreement
+PUT   /api/agreement                    whole list; owner only
+GET   /api/settings
+PUT   /api/settings                     owner only
+```
+
+`GET /api/users` lists who has access — names, e-mails and roles, never the
+hash (`passwordHash` is `select: false`, so it cannot reach a response by
+accident).
+
+Still to build: `POST /api/orders/[orderNumber]/ship` (create the Yalidine
+parcel, store tracking and label), `POST /api/users` (inviting someone means
+minting credentials), `/api/categories`, and `/api/reports/sales`.
+
+Every handler goes through `route()` in `src/lib/api.ts`, which connects,
+confirms the session **against the database** — a JWT alone would keep working
+after an account is deactivated — applies the `owner` guard, and turns Zod and
+Mongoose errors into `{ error: { code, message, fields } }`.
+
+Responses speak the shapes the screens already use: category slugs rather than
+ObjectIds, `isNew` rather than the database's `isNewArrival`. That translation
+lives in `src/lib/serialize.ts` alone.
+
+Role split: **staff** can run the shop — orders, stock, parcels. **owner** is
+additionally required for anything that changes money or the legal terms
+(`/api/settings`, `/api/agreement`).
+
+---
+
+## 8. Admin modules
+
+All six read and write through the API above. Server components
+(A2 dashboard, the tab-bar badge) call `src/lib/queries.ts` directly rather
+than fetching their own routes — one definition of each figure, no HTTP hop
+to the same process. Client screens use `src/lib/client.ts`, which turns a
+failure into a typed error carrying the server's own message, so a screen can
+say "Le stock ne peut pas passer sous zéro" rather than "une erreur est
+survenue". Every screen has a loading state and a retry.
+
+1. **Dashboard** — today's orders, pending-to-call count, revenue this month (remitted vs pending), low-stock list, top sellers.
+2. **Books** — list with cover/stock/price/status; editor with FR+AR tabs, cover upload, category multi-select, weight (required, blocks save when empty).
+3. **Stock** — on-hand per book, movement history, manual adjustment with a mandatory reason, low-stock alerts. On-hand lives on the book and an adjustment writes the movement and the new count together, so the ledger and the book editor can never disagree. Stock cannot be pushed below zero.
+4. **Sales** — order pipeline with status filters, one-tap call link, order detail, "create Yalidine parcel", print label, revenue reports.
+5. **Agreement** — section list, bullet-point builder with up/down reorder (not drag: the list is edited on a phone, where a drag handle fights the page scroll and is unreachable by keyboard), FR/AR side by side, missing-translation flags, preview of the public page. Section numbers are rendered from position, never typed into the title.
+6. **Settings** — origin wilaya, free-shipping threshold, overweight rate, store info, admin users, dark mode (admin only). The delivery values are display-only until Phase 1: the quote route still computes from `apps/store/src/lib/geo.ts`, and the screen says so.
+
+---
+
+
+## 9. Environment variables
+
+`.env.local.example` at the repo root is the working copy of this list — copy
+it to `.env.local` and fill it in.
+
+```
+# packages/db
+MONGODB_URI=
+
+# packages/db — seed script only
+SEED_ADMIN_EMAIL=
+SEED_ADMIN_NAME=
+SEED_ADMIN_PASSWORD=          # leave empty: the seed generates and prints one
+
+# apps/store + apps/admin
+NEXT_PUBLIC_SITE_URL=
+NEXTAUTH_SECRET=
+NEXTAUTH_URL=
+
+# apps/admin — where the public shop lives, for the A9 preview link.
+# Public by design; nothing secret ever gets a NEXT_PUBLIC_ prefix.
+NEXT_PUBLIC_STORE_URL=
+
+# yalidine (server only)
+YALIDINE_API_ID=
+YALIDINE_API_TOKEN=
+YALIDINE_FROM_WILAYA_ID=
+
+# media
+CLOUDINARY_CLOUD_NAME=
+CLOUDINARY_API_KEY=
+CLOUDINARY_API_SECRET=
+```
+
+---
+
+## 10. Build phases
+
+| Phase | Work | Output | Est. |
+|---|---|---|---|
+| **0 — Foundation** | npm-workspace monorepo, both Next apps, Tailwind tokens from the design brief, Mongo connection, next-intl + RTL, shared UI primitives | Both apps boot, locale switch works, DB connects | 1–2 d |
+| **1 — Data & admin core** | ~~Mongoose models~~, ~~seed script~~ (done), API routes replacing the localStorage stubs, NextAuth against `adminUsers` + bcrypt, cover upload | You can enter your real catalogue | 1–2 d |
+| **2 — Storefront catalogue** | ~~Home, listing, search, filters, book detail, bottom nav, cart~~ — done, reading from Mongo | Browsable shop | ✓ |
+| **3 — Checkout + Yalidine** | ~~Pickers, quote endpoint, fee display, order creation, confirmation, tracking~~ — done. Remaining: the real Yalidine client, its cache, parcel creation and labels | End-to-end purchase works; live tariffs pending credentials | 1–2 d once credentials arrive |
+| **4 — Sales management** | Order pipeline, detail, status transitions, parcel creation, label print, cron status sync | You can run the business | 2–3 d |
+| **5 — Stock** | Movement ledger, adjustments, low-stock alerts | Stock you can trust | 1–2 d |
+| **6 — Agreement, polish, ship** | Agreement editor + public page, Arabic pass, empty/error states, SEO, Vercel deploy | Live | 2 d |
+
+Roughly **2.5–3 weeks** of focused solo work. Phases 0–2 need none of the open items below.
+
+---
+
+## 11. Open items — still needed from you
+
+1. `YALIDINE_API_ID` + `YALIDINE_API_TOKEN` in `.env.local`, plus whatever endpoint doc they sent you.
+2. Origin wilaya, and whether admin creates parcels via the API or you enter them manually on their dashboard.
+3. `MONGODB_URI`.
+4. Final category list in French.
+5. Book weights — Yalidine surcharges by the kilo and the schema requires it.
+6. Store name, logo, phone, social links.
+
+Items 1–2 gate Phase 3 only. Items 3–4 gate Phase 1. **Phase 0 is unblocked today.**

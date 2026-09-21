@@ -1,0 +1,158 @@
+@import "tailwindcss";
+
+/* ------------------------------------------------------------------
+   Admin tokens — the same set as the storefront (board BookOran31),
+   plus the dark mode the brief grants the admin only.
+   Keep these in sync with apps/store/src/app/globals.css until the
+   shared packages/ui lands.
+------------------------------------------------------------------- */
+
+@theme {
+  --color-paper: #faf6f0;
+  --color-surface: #ffffff;
+  --color-sand: #f2e9dc;
+  --color-sand-deep: #e3d5c3;
+  --color-canvas: #eae1d6;
+
+  --color-rose: #b34a62;
+  --color-rose-hover: #9a3e53;
+  --color-rose-300: #e9a7b5;
+  --color-rose-50: #fbedf0;
+
+  --color-ink: #1a1614;
+  --color-ink-muted: #6b605a;
+  --color-ink-faint: #9c918a;
+  --color-ink-deep: #16130f;
+
+  --color-success: #2e7d5b;
+  --color-warning: #b4762a;
+  --color-danger: #b3352f;
+  --color-info: #3a6b8a;
+
+  --font-display: var(--font-fraunces), Georgia, serif;
+  --font-ui: var(--font-jakarta), system-ui, sans-serif;
+  --font-ar: var(--font-tajawal), system-ui, sans-serif;
+
+  --text-display-lg: 32px;
+  --text-display-lg--line-height: 38px;
+  --text-display-lg--font-weight: 700;
+  --text-display: 26px;
+  --text-display--line-height: 32px;
+  --text-display--font-weight: 700;
+  --text-title: 20px;
+  --text-title--line-height: 28px;
+  --text-title--font-weight: 600;
+  --text-body-lg: 17px;
+  --text-body-lg--line-height: 26px;
+  --text-body: 15px;
+  --text-body--line-height: 23px;
+  --text-caption: 13px;
+  --text-caption--line-height: 18px;
+  --text-caption--font-weight: 500;
+  --text-micro: 11px;
+  --text-micro--line-height: 14px;
+  --text-micro--font-weight: 600;
+
+  --radius-cover: 8px;
+  --radius-input: 12px;
+  --radius-card: 16px;
+  --radius-sheet: 24px;
+
+  --shadow-sm: 0 1px 2px rgba(26, 22, 20, 0.06);
+  --shadow-md: 0 4px 16px rgba(26, 22, 20, 0.08);
+  --shadow-lg: 0 12px 32px rgba(26, 22, 20, 0.12);
+}
+
+/* A2·b — dark mode, admin only. The storefront stays light (brief §3). */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+:root[data-theme="dark"] {
+  --color-paper: #16130f;
+  --color-surface: #211c17;
+  --color-sand: #2a231c;
+  --color-sand-deep: #3a3128;
+  --color-canvas: #100e0b;
+  --color-ink: #f6f1ea;
+  --color-ink-muted: #b3a89e;
+  --color-ink-faint: #8a7f75;
+  --color-rose-50: #33202a;
+  --color-rose-300: #8a4457;
+}
+
+@layer base {
+  html {
+    background: var(--color-canvas);
+  }
+
+  body {
+    background: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-ui);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  html[lang="ar"] body {
+    font-family: var(--font-ar);
+  }
+  html[lang="ar"] .font-display {
+    font-family: var(--font-ar);
+    font-weight: 700;
+  }
+
+  .lat {
+    font-family: var(--font-ui);
+    direction: ltr;
+    unicode-bidi: isolate;
+  }
+
+  button,
+  a,
+  input,
+  select,
+  textarea {
+    font: inherit;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-rose);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+}
+
+@layer utilities {
+  .rail {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .rail::-webkit-scrollbar {
+    height: 0;
+    width: 0;
+  }
+
+  .shimmer {
+    background: linear-gradient(
+      90deg,
+      var(--color-sand) 0%,
+      color-mix(in srgb, var(--color-sand) 60%, white) 50%,
+      var(--color-sand) 100%
+    );
+    background-size: 240px 100%;
+    animation: shim 1.2s linear infinite;
+  }
+
+  @keyframes shim {
+    0% {
+      background-position: -240px 0;
+    }
+    100% {
+      background-position: 2000px 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .shimmer {
+      animation: none;
+    }
+  }
+}

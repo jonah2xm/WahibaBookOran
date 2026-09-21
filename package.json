@@ -1,0 +1,18 @@
+{
+  "name": "bookoran31",
+  "private": true,
+  "version": "0.1.0",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev:store": "npm run dev --workspace @bookoran/store",
+    "dev:admin": "npm run dev --workspace @bookoran/admin",
+    "build": "npm run build --workspaces --if-present",
+    "lint": "npm run lint --workspaces --if-present"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

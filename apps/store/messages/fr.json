@@ -1,0 +1,233 @@
+{
+  "brand": {
+    "name": "BookOran31",
+    "phone": "0555 31 24 08",
+    "city": "Oran"
+  },
+  "nav": {
+    "home": "Accueil",
+    "categories": "Catégories",
+    "search": "Recherche",
+    "cart": "Panier",
+    "back": "Retour"
+  },
+  "home": {
+    "tagline": "Des livres choisis, livrés partout en Algérie.",
+    "freeShipping": "Livraison offerte dès {amount}",
+    "cod": "Paiement à la livraison",
+    "new": "Nouveautés",
+    "bestSellers": "Meilleures ventes",
+    "seeAll": "Tout voir"
+  },
+  "trust": {
+    "cod": "Paiement à la livraison",
+    "coverage": "Livraison 58 wilayas",
+    "returns": "Retour sous 48 h"
+  },
+  "book": {
+    "inStock": "En stock",
+    "inStockShipped": "En stock — expédié sous 24 h",
+    "lowStock": "Plus que {count} exemplaires",
+    "outOfStock": "Rupture de stock",
+    "addToCart": "Ajouter au panier",
+    "author": "Auteur",
+    "quantity": "Quantité",
+    "total": "Total",
+    "summary": "Résumé",
+    "sameAuthor": "Du même auteur",
+    "discount": "−{percent}%",
+    "specs": {
+      "publisher": "Éditeur",
+      "pages": "Pages",
+      "language": "Langue",
+      "isbn": "ISBN",
+      "weight": "Poids"
+    },
+    "lang": {
+      "fr": "Français",
+      "ar": "Arabe"
+    },
+    "delivery": {
+      "title": "Livraison estimée à {city}",
+      "rates": "{home} à domicile · {desk} au point de retrait",
+      "note": "Le prix exact s'affiche dès le choix de la commune."
+    }
+  },
+  "cart": {
+    "title": "Mon panier",
+    "subtotal": "Sous-total",
+    "delivery": "Livraison",
+    "deliveryNextStep": "calculée à l'étape suivante",
+    "freeShipHint": "Plus que {amount} pour la livraison offerte.",
+    "freeShipReached": "Livraison offerte — vous y êtes.",
+    "checkout": "Commander",
+    "remove": "Retirer",
+    "removeItem": "Retirer {title} du panier",
+    "blockedByStock": "Retirez cet article pour continuer.",
+    "empty": {
+      "title": "Votre panier est vide",
+      "body": "Les nouveautés arrivent chaque semaine — commencez par là.",
+      "primary": "Découvrir les nouveautés",
+      "secondary": "Parcourir les catégories"
+    }
+  },
+  "common": {
+    "currency": "DA",
+    "language": "FR"
+  },
+  "category": {
+    "count": "{count, plural, one {# livre} other {# livres}}",
+    "sort": "Trier",
+    "price": "Prix",
+    "inStock": "En stock",
+    "language": "Langue",
+    "filtersLabel": "Filtres :",
+    "all": "Tous les livres",
+    "browse": "Parcourir"
+  },
+  "filters": {
+    "newest": "Nouveauté",
+    "priceAsc": "Prix croissant",
+    "priceDesc": "Prix décroissant",
+    "price": "Prix",
+    "reset": "Réinitialiser",
+    "apply": "{count, plural, one {Voir # livre} other {Voir # livres}}",
+    "min": "Minimum",
+    "max": "Maximum",
+    "close": "Fermer",
+    "alphaAsc": "Titre A → Z",
+    "alphaDesc": "Titre Z → A"
+  },
+  "search": {
+    "placeholder": "Titre, auteur, sujet…",
+    "cancel": "Annuler",
+    "suggestions": "Suggestions",
+    "recent": "Recherches récentes",
+    "clear": "Effacer",
+    "results": "Résultats · {count}",
+    "emptyTitle": "Aucun livre pour « {query} »",
+    "emptyBody": "Vérifiez l'orthographe, ou explorez ces rayons.",
+    "backHome": "Retour à l'accueil"
+  },
+  "checkout": {
+    "title": "Commander",
+    "step1": "1 · Coordonnées",
+    "step2": "2 · Livraison",
+    "step3": "3 · Récapitulatif",
+    "stepShort1": "Coordonnées",
+    "stepShort2": "Livraison",
+    "stepShort3": "Récapitulatif",
+    "fullName": "Nom complet",
+    "fullNamePh": "Amine Belkacem",
+    "phone": "Téléphone",
+    "phonePh": "0X XX XX XX XX",
+    "altPhone": "Second téléphone — optionnel",
+    "wilaya": "Wilaya",
+    "commune": "Commune",
+    "choose": "Choisir",
+    "communesHint": "{count} communes — recherche par nom.",
+    "searchPlaceholder": "Rechercher…",
+    "noMatch": "Aucun résultat",
+    "close": "Fermer",
+    "home": "À domicile",
+    "homeDelay": "2 à 4 jours",
+    "desk": "Point de retrait",
+    "deskDelay": "1 à 3 jours",
+    "address": "Adresse complète",
+    "addressPh": "Rue, immeuble, étage, point de repère",
+    "center": "Centre Yalidine",
+    "feeTitle": "Frais de livraison",
+    "feeIdle": "Choisissez votre commune pour voir le prix exact.",
+    "feeLoading": "Calcul…",
+    "feeConfirmed": "Tarif Yalidine confirmé",
+    "feeFree": "Livraison offerte",
+    "feeUnavailable": "Tarif indisponible pour cette commune — nous confirmons par téléphone.",
+    "callMe": "Être rappelé",
+    "subtotal": "Sous-total",
+    "delivery": "Livraison",
+    "total": "Total",
+    "toConfirm": "à confirmer",
+    "codTitle": "Vous payez à la livraison",
+    "codBody": "En espèces, au livreur. Aucun paiement en ligne.",
+    "agreePre": "J'accepte les ",
+    "agreeLink": "conditions de vente",
+    "agreePost": " et la politique de retour.",
+    "totalDue": "Total à payer",
+    "confirm": "Confirmer la commande",
+    "missingFields": "Complétez vos coordonnées et votre adresse de livraison.",
+    "mustAgree": "Vous devez accepter les conditions de vente.",
+    "sending": "Envoi…",
+    "orderFailed": "La commande n’a pas pu être envoyée. Réessayez.",
+    "noLongerAvailable": "Un livre de votre panier n’est plus disponible. Revenez au panier pour le retirer."
+  },
+  "confirmation": {
+    "title": "Commande enregistrée",
+    "body": "Nous vous appelons dans la journée pour confirmer avant l'expédition.",
+    "orderNumber": "Numéro de commande",
+    "copy": "Copier",
+    "copied": "Copié",
+    "items": "{count, plural, one {# article} other {# articles}}",
+    "deliveryTo": "Livraison — {place}",
+    "toPay": "À payer au livreur",
+    "track": "Suivre ma commande",
+    "keepShopping": "Continuer mes achats",
+    "toConfirm": "à confirmer",
+    "noOrder": "Aucune commande récente.",
+    "feePending": "Les frais de livraison pour votre commune seront confirmés par téléphone."
+  },
+  "tracking": {
+    "title": "Suivre ma commande",
+    "orderNumber": "N° de commande",
+    "phone": "Téléphone",
+    "submit": "Chercher",
+    "notFound": "Aucune commande ne correspond à ce numéro et ce téléphone.",
+    "yalidine": "Suivi Yalidine",
+    "copy": "Copier",
+    "copied": "Copié",
+    "pending": "en attente",
+    "status": {
+      "registered": "Commande enregistrée",
+      "confirmed": "Commande confirmée",
+      "packed": "Préparée",
+      "shipped": "Expédiée — en cours de livraison",
+      "delivered": "Livrée"
+    },
+    "statusShort": {
+      "registered": "Enregistrée",
+      "confirmed": "Confirmée",
+      "packed": "Préparée",
+      "shipped": "Expédiée",
+      "delivered": "Livrée"
+    },
+    "prepare": "Préparez {amount} en espèces pour le livreur.",
+    "awaitingCall": "Nous vous appelons pour confirmer. Le suivi Yalidine s'affiche dès l'expédition."
+  },
+  "legal": {
+    "title": "Conditions de vente",
+    "toc": "Sommaire"
+  },
+  "errors": {
+    "notFoundCode": "404",
+    "notFoundTitle": "Cette page a quitté le rayon",
+    "notFoundBody": "Le lien est peut-être ancien. Revenez à l'accueil pour retrouver le catalogue.",
+    "offlineTitle": "Vous êtes hors ligne",
+    "offlineBody": "Votre panier est conservé. Il se synchronisera au retour du réseau.",
+    "errorTitle": "Une erreur est survenue",
+    "errorBody": "Réessayez dans un instant, ou appelez-nous au {phone}.",
+    "retry": "Réessayer",
+    "call": "Appeler",
+    "home": "Retour à l'accueil"
+  },
+  "books": {
+    "title": "Tous les livres",
+    "searchPlaceholder": "Rechercher un livre, un auteur…",
+    "count": "{count, plural, one {# livre} other {# livres}}",
+    "noResultsTitle": "Aucun livre ne correspond",
+    "noResultsBody": "Essayez un autre mot, ou élargissez vos filtres.",
+    "clearAll": "Tout effacer",
+    "all": "Tous",
+    "sortLabel": "Trier",
+    "priceAny": "Prix",
+    "priceRange": "{min} – {max}"
+  }
+}
