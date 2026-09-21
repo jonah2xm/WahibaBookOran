@@ -22,7 +22,9 @@
     "show": "Afficher le mot de passe",
     "hide": "Masquer le mot de passe",
     "signOut": "Se déconnecter",
-    "forgotHint": "Contactez le développeur pour réinitialiser le mot de passe."
+    "forgotHint": "Contactez le développeur pour réinitialiser le mot de passe.",
+    "noDatabase": "La base de données est injoignable. Vérifiez MONGODB_URI sur l’hébergeur.",
+    "noAccount": "Aucun compte gérant n’existe encore dans cette base. Lancez le script de création (npm run seed)."
   },
   "nav": {
     "dashboard": "Tableau",

@@ -15,14 +15,18 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [reveal, setReveal] = useState(false);
-  const [error, setError] = useState(false);
+  // "bad" is a genuinely wrong credential; the others mean nobody could have
+  // signed in, whatever they typed.
+  const [error, setError] = useState<
+    null | "bad" | "no_account" | "no_database"
+  >(null);
   const [pending, setPending] = useState(false);
   const [showForgot, setShowForgot] = useState(false);
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     setPending(true);
-    setError(false);
+    setError(null);
 
     let failed = true;
     try {
@@ -42,13 +46,26 @@ export default function LoginPage() {
       failed = true;
     }
 
-    setPending(false);
     if (failed) {
-      // One message for both cases on purpose: saying which half was wrong
-      // tells an attacker which emails exist.
-      setError(true);
+      // Ask the server WHY before blaming the credentials. A missing database
+      // or an empty adminUsers collection is not a typo, and telling someone
+      // their password is wrong when no account exists sends them hunting for
+      // the wrong problem.
+      let reason: "bad" | "no_account" | "no_database" = "bad";
+      try {
+        const health = await fetch("/api/health").then((r) => r.json());
+        if (health?.database !== "ok") reason = "no_database";
+        else if (!health?.hasAdminAccount) reason = "no_account";
+      } catch {
+        /* health check itself failed — fall back to the generic message */
+      }
+      setPending(false);
+      // When an account does exist, the message stays deliberately vague:
+      // saying which half was wrong tells an attacker which e-mails exist.
+      setError(reason);
       return;
     }
+    setPending(false);
     router.push("/");
     router.refresh();
   }
@@ -71,7 +88,11 @@ export default function LoginPage() {
             className="flex items-center gap-2 rounded-input bg-danger/10 p-3 text-caption text-danger"
           >
             <IconAlert className="h-5 w-5 shrink-0" />
-            {t("invalid")}
+            {error === "no_database"
+              ? t("noDatabase")
+              : error === "no_account"
+                ? t("noAccount")
+                : t("invalid")}
           </p>
         ) : null}
 

@@ -50,9 +50,12 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
         try {
           await connectDb();
-        } catch {
+        } catch (error) {
           // The database being down must read as "cannot sign in", never as
-          // "signed in". Returning null is the safe direction.
+          // "signed in". Returning null is the safe direction — but log the
+          // real cause, because on screen this is indistinguishable from a
+          // wrong password. /api/health tells the login page which it was.
+          console.error("[auth] database unreachable:", error);
           return null;
         }
 

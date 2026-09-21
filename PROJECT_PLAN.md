@@ -394,8 +394,15 @@ survenue". Every screen has a loading state and a retry.
 
 ## 9. Environment variables
 
-`.env.local.example` at the repo root is the working copy of this list — copy
-it to `.env.local` and fill it in.
+Two files at the repo root, one per database (see §10):
+
+- `.env.local` — development, local mongod. Start from `.env.local.example`.
+- `.env.production.local` — production, Atlas. Start from
+  `.env.production.local.example`. Read only by `npm run seed:prod`; the
+  deployed apps get the same values from Vercel's own settings.
+
+Both are git-ignored. Each app also has its own `.env.local` for `npm run dev`;
+the seed reads the root one first, so it wins.
 
 ```
 # packages/db
@@ -406,10 +413,17 @@ SEED_ADMIN_EMAIL=
 SEED_ADMIN_NAME=
 SEED_ADMIN_PASSWORD=          # leave empty: the seed generates and prints one
 
+# packages/db — seed script only, and only when this machine's DNS refuses
+# SRV lookups. Never needed on the host.
+DNS_SERVERS=                  # e.g. 8.8.8.8,1.1.1.1
+
 # apps/store + apps/admin
 NEXT_PUBLIC_SITE_URL=
-NEXTAUTH_SECRET=
-NEXTAUTH_URL=
+
+# apps/admin — signs the session cookie. NextAuth v5 reads AUTH_SECRET, not
+# NEXTAUTH_SECRET. Production uses a different value from development, so a
+# session minted locally is not accepted by the live back-office.
+AUTH_SECRET=
 
 # apps/admin — where the public shop lives, for the A9 preview link.
 # Public by design; nothing secret ever gets a NEXT_PUBLIC_ prefix.
@@ -428,7 +442,99 @@ CLOUDINARY_API_SECRET=
 
 ---
 
-## 10. Build phases
+## 10. Deploying
+
+### Two databases, never one
+
+Development and production are separate databases and must stay that way: a
+test order in the shop's real ledger is indistinguishable from a real one, and
+a dev reset would take the real catalogue with it.
+
+| | database | env file | who reads it |
+|---|---|---|---|
+| development | `mongodb://127.0.0.1:27017/bookoran31` | `.env.local` (and each app's own) | `npm run dev`, `npm run seed` |
+| production | Atlas `bookoran31` | `.env.production.local` | Vercel, `npm run seed:prod` |
+
+`.env.production.local` is git-ignored; `.env.production.local.example` shows
+its shape. Both files live at the repo root, and the seed resolves `--env`
+against that root whichever workspace it is run from.
+
+Development is a **local mongod**, not a second Atlas database. That is partly
+speed and offline work, and partly the DNS problem below: on a machine whose
+resolver refuses SRV lookups, a Next dev server cannot reach a `mongodb+srv://`
+URI at all, while Vercel can. Local dev sidesteps it entirely, and only the
+seed — which can be handed `DNS_SERVERS` — ever talks to Atlas from here.
+
+### Seeding production
+
+```bash
+npm run seed:prod --workspace @bookoran/db
+```
+
+That is `run.ts --env=.env.production.local`. Loading that file first is what
+makes it win: dotenv never overwrites a variable that is already set, so the
+dev `.env.local` loaded straight afterwards cannot take the target back.
+
+The script prints the database name and a banner before it writes anything,
+refuses a URI that names no database, and refuses `--reset` against a
+non-local database without `--force`. It never creates orders, and
+`seed:demo` refuses a non-local database outright.
+
+### The admin needs an account CREATED, not configured
+
+There are no `ADMIN_EMAIL` / `ADMIN_PASSWORD` variables any more. Sign-in reads
+the `adminUsers` collection and compares a bcrypt hash, so setting those on the
+host does nothing — the account has to be written into the database the
+deployed app talks to.
+
+On the host (Vercel), `apps/admin` needs:
+
+```
+MONGODB_URI=mongodb+srv://…            # the same database, reachable from the host
+AUTH_SECRET=…                          # openssl rand -base64 32
+NEXT_PUBLIC_STORE_URL=https://…        # the public shop, for the A9 preview link
+```
+
+Atlas blocks unknown IPs by default, so add `0.0.0.0/0` under Network Access
+or Vercel cannot connect at all.
+
+**Name the database in the URI.** `…mongodb.net/?appName=x` writes everything
+into `test`; `…mongodb.net/bookoran31?…` is what you want, and the seed and
+the host must use the same one or they will look at different data. The seed
+exits rather than write into `test`.
+
+**`querySrv ECONNREFUSED` is DNS, not Mongo.** A `mongodb+srv://` URI needs an
+SRV record, and Node resolves it itself with c-ares instead of going through
+the OS resolver. A machine whose DNS server is `127.0.0.1` — a VPN client,
+Docker, a privacy filter — often has that proxy refuse Node's direct query
+even though Windows resolves the same name fine. Either re-run with
+`DNS_SERVERS=8.8.8.8,1.1.1.1`, or use Atlas's standard (non-`+srv`) string,
+which lists the hosts and needs no lookup. The seed prints this when it
+happens.
+
+The account is created by `npm run seed:prod`, which reads
+`SEED_ADMIN_EMAIL` / `SEED_ADMIN_NAME` from `.env.production.local`.
+
+Leave `SEED_ADMIN_PASSWORD` unset and the script generates one and prints it
+once. The seed is idempotent and never touches an account that already exists,
+so re-running it is safe — and it will not reset a forgotten password.
+
+### Diagnosing a refused login
+
+`GET /api/health` on the admin returns two booleans and nothing else:
+
+```json
+{ "database": "ok" | "unreachable" | "not_configured", "hasAdminAccount": true }
+```
+
+The login page calls it after a failure, so the screen says which of the three
+it was rather than blaming the password for a missing database. Only a genuine
+credential mismatch gets the vague "e-mail ou mot de passe incorrect" — naming
+the wrong half would tell an attacker which e-mails exist.
+
+---
+
+## 11. Build phases
 
 | Phase | Work | Output | Est. |
 |---|---|---|---|
@@ -444,7 +550,7 @@ Roughly **2.5–3 weeks** of focused solo work. Phases 0–2 need none of the op
 
 ---
 
-## 11. Open items — still needed from you
+## 12. Open items — still needed from you
 
 1. `YALIDINE_API_ID` + `YALIDINE_API_TOKEN` in `.env.local`, plus whatever endpoint doc they sent you.
 2. Origin wilaya, and whether admin creates parcels via the API or you enter them manually on their dashboard.

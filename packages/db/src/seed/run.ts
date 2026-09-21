@@ -5,7 +5,16 @@
  * running it twice changes nothing the second time. Run it after any edit to
  * the files in this folder.
  *
+ * Targets development by default (.env.local). For production:
+ *
+ *   npm run seed:prod --workspace @bookoran/db
+ *
+ * which is this script with --env=.env.production.local. The two are separate
+ * databases on the same cluster, so which one a run writes to is decided here
+ * and nowhere else.
+ *
  * Flags:
+ *   --env=F   read F before .env.local, so F decides the database.
  *   --reset   empty the catalogue, the stock ledger, the agreement, the
  *             settings and the order counter first. Orders and admin users
  *             are never touched: one is the business's records, the other is
@@ -15,6 +24,8 @@
  * What it does NOT do: invent an admin password. See ensureOwner() below.
  */
 import { randomBytes } from "node:crypto";
+import dns from "node:dns";
+import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import dotenv from "dotenv";
@@ -33,14 +44,70 @@ import { seedBooks, seedCategories } from "./catalogue";
 const here = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(here, "../../../..");
 
-// Same file the apps read, so the script and the app cannot point at
+const args = new Set(process.argv.slice(2));
+const reset = args.has("--reset");
+const force = args.has("--force");
+
+/**
+ * --env=<file> picks which database this run targets.
+ *
+ * Production and development are separate databases, and which one a run
+ * writes to must be something you can read off the command line. Without the
+ * flag this loads .env.local and seeds development; with
+ * `--env=.env.production.local` it seeds production.
+ *
+ * Order matters: dotenv never overwrites a variable that is already set, so
+ * the FIRST file to define MONGODB_URI wins. Loading the chosen file first is
+ * what stops the dev .env.local below from quietly taking over.
+ */
+const envFlag = [...args]
+  .find((a) => a.startsWith("--env="))
+  ?.slice("--env=".length);
+
+if (envFlag) {
+  const file = path.isAbsolute(envFlag) ? envFlag : path.join(root, envFlag);
+  // Falling back to the defaults here would seed development while the
+  // command said production. Refuse instead.
+  if (!fs.existsSync(file)) {
+    console.error(`\n--env file not found: ${file}\n`);
+    process.exit(1);
+  }
+  dotenv.config({ path: file });
+  console.log(`Env file: ${path.relative(root, file)}`);
+}
+
+// Same files the apps read, so the script and the app cannot point at
 // different databases by accident.
 dotenv.config({ path: path.join(root, ".env.local") });
 dotenv.config({ path: path.join(root, "apps/admin/.env.local") });
 
-const args = new Set(process.argv.slice(2));
-const reset = args.has("--reset");
-const force = args.has("--force");
+/**
+ * `mongodb+srv://` needs a DNS SRV lookup, and Node does that itself with
+ * c-ares rather than through the OS resolver. If the machine points at a
+ * local DNS proxy (a VPN client, Docker, a privacy filter — anything that
+ * puts 127.0.0.1 in the resolver list), that proxy often refuses Node's
+ * direct queries even though Windows itself resolves the name fine. The
+ * result is `querySrv ECONNREFUSED`, which says nothing about the cause.
+ *
+ * Opt in with DNS_SERVERS=8.8.8.8,1.1.1.1 to route lookups elsewhere. Not
+ * automatic: sending your DNS queries to a third party is your call, not the
+ * script's.
+ */
+const dnsServers = (process.env.DNS_SERVERS ?? "")
+  .split(",")
+  .map((s) => s.trim())
+  .filter(Boolean);
+
+if (dnsServers.length) {
+  dns.setServers(dnsServers);
+  console.log(`Using DNS servers: ${dnsServers.join(", ")}`);
+}
+
+/** The database a URI actually writes to, or null when it names none. */
+function databaseName(uri: string) {
+  const match = /^mongodb(?:\+srv)?:\/\/[^/?]+\/([^?/]+)/.exec(uri);
+  return match?.[1] ? decodeURIComponent(match[1]) : null;
+}
 
 function log(step: string, detail = "") {
   console.log(`  ${step.padEnd(22)} ${detail}`);
@@ -258,8 +325,37 @@ async function main() {
     process.exit(1);
   }
 
+  const database = databaseName(uri);
+
+  // No database name means the driver silently uses `test`. On one cluster
+  // holding both environments that is how production data ends up in the
+  // development database, or the other way round — so this is fatal, not a
+  // warning.
+  if (!database) {
+    console.error(
+      "\nMONGODB_URI names no database, so everything would go into `test`.\n\n" +
+        "  Put the name before the ? :\n" +
+        "    ...mongodb.net/bookoran31_dev?retryWrites=true&w=majority\n\n" +
+        "  Use the SAME uri on the host, or the deployed app reads a different\n" +
+        "  database and finds neither your catalogue nor your admin account.\n",
+    );
+    process.exit(1);
+  }
+
   const shown = uri.replace(/\/\/[^@]*@/, "//***@");
-  console.log(`\nSeeding ${shown}\n`);
+  const local = /localhost|127\.0\.0\.1/.test(uri);
+
+  console.log(`\nSeeding ${shown}`);
+  console.log(`Database: ${database}${local ? "" : "  (remote)"}`);
+
+  // Worth a banner: on a shared cluster the only thing separating the shop's
+  // real catalogue from a scratch one is this name.
+  if (!local) {
+    const line = `  TARGET: ${database}  — this is not a local database`;
+    const rule = "─".repeat(line.length);
+    console.log(`\n${rule}\n${line}\n${rule}`);
+  }
+  console.log("");
 
   await connectDb(uri);
 
@@ -277,7 +373,38 @@ async function main() {
 }
 
 main().catch(async (error) => {
-  console.error("\nSeed failed:", error instanceof Error ? error.message : error);
+  const message = error instanceof Error ? error.message : String(error);
+  console.error("\nSeed failed:", message);
+
+  // The two failures worth explaining, because the raw message points at
+  // neither cause.
+  if (/querySrv|ECONNREFUSED .*_mongodb/.test(message)) {
+    console.error(
+      "\n  This is a DNS failure, not a database failure. A `mongodb+srv://`\n" +
+        "  URI needs an SRV record, and Node resolves it itself — your machine's\n" +
+        "  DNS is refusing that query. Two ways out:\n\n" +
+        "    1. Re-run with DNS_SERVERS=8.8.8.8,1.1.1.1\n" +
+        "    2. Or use Atlas's STANDARD connection string instead of the +srv one\n" +
+        "       (Connect -> Drivers -> Node.js 2.2.12 or later). It lists the hosts\n" +
+        "       directly, so no SRV lookup happens at all.\n",
+    );
+  }
+
+  if (/Authentication failed|bad auth/i.test(message)) {
+    console.error(
+      "\n  The cluster answered but rejected the credentials. Check the user and\n" +
+        "  password in MONGODB_URI, and remember a password with @ : / ? # or %\n" +
+        "  must be percent-encoded.\n",
+    );
+  }
+
+  if (/IP .*not allowed|whitelist/i.test(message)) {
+    console.error(
+      "\n  Atlas is refusing this IP. Add it under Network Access, or 0.0.0.0/0\n" +
+        "  if the deployed app also needs in.\n",
+    );
+  }
+
   await disconnectDb();
   process.exit(1);
 });
