@@ -4,6 +4,19 @@ import { IconChevron } from "@/components/icons";
 import { getAgreement } from "@/lib/catalogue";
 import { pick } from "@/lib/types";
 
+/**
+ * Re-render at most once a minute.
+ *
+ * Without this Next prerenders the page at build time and Vercel serves that
+ * snapshot forever: adding a book in the admin changes nothing on the shop
+ * until the next deploy. The catalogue and the conditions are both editable,
+ * so neither can be frozen at build time.
+ *
+ * 60s rather than fully dynamic: a bookshop's catalogue changes a few times a
+ * week, and a static page is much faster on a mobile connection.
+ */
+export const revalidate = 60;
+
 /** S9 — Conditions. One template for CGV, retours and confidentialité. */
 export default async function ConditionsPage({
   params,

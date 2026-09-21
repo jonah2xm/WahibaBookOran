@@ -486,6 +486,16 @@ refuses a URI that names no database, and refuses `--reset` against a
 non-local database without `--force`. It never creates orders, and
 `seed:demo` refuses a non-local database outright.
 
+### The storefront must not be frozen at build time
+
+The home page, `/livres` and `/conditions` all read editable data, so each
+exports `revalidate = 60`. Without it Next prerenders them at build time and
+Vercel serves that snapshot indefinitely — `x-vercel-cache: HIT` with an `age`
+that only grows — so adding a book in the admin changes nothing on the shop
+until the next deploy. Book pages were already dynamic.
+
+Any new storefront page that reads the database needs the same export.
+
 ### Deleting a book
 
 `DELETE /api/books/<slug>` refuses with 409 when the book appears in any

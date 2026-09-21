@@ -13,6 +13,19 @@ import {
 import { getHomeRails, getShopSettings } from "@/lib/catalogue";
 import { formatDzd } from "@/lib/format";
 
+/**
+ * Re-render at most once a minute.
+ *
+ * Without this Next prerenders the page at build time and Vercel serves that
+ * snapshot forever: adding a book in the admin changes nothing on the shop
+ * until the next deploy. The catalogue and the conditions are both editable,
+ * so neither can be frozen at build time.
+ *
+ * 60s rather than fully dynamic: a bookshop's catalogue changes a few times a
+ * week, and a static page is much faster on a mobile connection.
+ */
+export const revalidate = 60;
+
 /** S1 — Accueil: hero · nouveautés · meilleures ventes. The board's category
  *  rail was removed — browsing happens on /livres now. */
 export default async function HomePage({
