@@ -115,6 +115,21 @@ export default function AdminBooksPage() {
                   href={`/livres/${b.slug}`}
                   className="flex items-center gap-3 rounded-card bg-surface p-3 shadow-sm"
                 >
+                  {/* Thumbnail, so a book still missing its cover is visible
+                      at a glance instead of only inside the editor. */}
+                  <span className="w-10 shrink-0 overflow-hidden rounded-[4px] bg-sand">
+                    {b.coverUrl ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={b.coverUrl}
+                        alt=""
+                        className="aspect-[2/3] w-full object-cover"
+                      />
+                    ) : (
+                      <span className="block aspect-[2/3] w-full" />
+                    )}
+                  </span>
+
                   <span className="flex min-w-0 flex-1 flex-col">
                     <span className="font-display line-clamp-1 text-body font-semibold">
                       {pick(b.title, locale)}
