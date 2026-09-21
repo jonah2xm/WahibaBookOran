@@ -263,5 +263,34 @@
     "requiredAuthor": "L’auteur est obligatoire.",
     "requiredSlug": "L’adresse ne peut pas être vide.",
     "requiredPrice": "Indiquez un prix."
+  },
+  "categories": {
+    "title": "Catégories",
+    "nameFr": "Nom en français",
+    "nameAr": "Nom en arabe",
+    "add": "Ajouter une catégorie",
+    "create": "Créer",
+    "edit": "Modifier",
+    "save": "Enregistrer",
+    "hide": "Masquer",
+    "show": "Afficher",
+    "hidden": "masquée",
+    "delete": "Supprimer",
+    "deleteConfirm": "Supprimer cette catégorie ? Les livres ne sont pas supprimés, mais ils perdent ce classement.",
+    "deleteYes": "Oui, supprimer",
+    "bookCount": "{n, plural, =0 {aucun livre} one {# livre} other {# livres}}",
+    "slugPreview": "Adresse : {slug}"
+  },
+  "password": {
+    "account": "Compte",
+    "change": "Modifier mon mot de passe",
+    "current": "Mot de passe actuel",
+    "new": "Nouveau mot de passe",
+    "repeat": "Répéter le nouveau",
+    "showPasswords": "Afficher les mots de passe",
+    "hint": "Au moins 10 caractères. Ce compte voit le nom, le téléphone et l’adresse de chaque client.",
+    "submit": "Changer",
+    "mismatch": "Les deux nouveaux mots de passe ne correspondent pas.",
+    "changed": "Mot de passe modifié."
   }
 }

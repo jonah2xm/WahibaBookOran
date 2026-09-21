@@ -496,6 +496,31 @@ until the next deploy. Book pages were already dynamic.
 
 Any new storefront page that reads the database needs the same export.
 
+### Categories and passwords
+
+`/api/categories` is owner-only, like everything that shapes the shop.
+Deleting a category is refused while any book is still classified in it:
+those books would keep an id resolving to nothing and quietly vanish from
+category pages while still looking correct in the editor. Hiding takes it out
+of the shop without touching the books.
+
+The slug cannot be edited. Books reference a category by id so a rename would
+not break them, but the storefront links to `/livres?categorie=<slug>` and
+every shared link would die.
+
+`POST /api/account/password` changes YOUR OWN password and nothing else: the
+e-mail comes from the session, never the request, so there is no field
+pointing at somebody else's account. The current password is required even
+though the caller is signed in — a session is not proof of identity, and the
+change locks the real owner out. Minimum ten characters.
+
+### Home page rails
+
+Nouveautés shows 5, Meilleures ventes 6, set in `getHomeRails()`. The home
+page is a shop window, not the catalogue; everything is one tap away on
+/livres. Both fall back to the newest books when nothing carries the flag,
+sliced to the same sizes.
+
 ### Deleting a book
 
 `DELETE /api/books/<slug>` refuses with 409 when the book appears in any

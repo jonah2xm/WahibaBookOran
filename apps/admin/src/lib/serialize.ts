@@ -17,6 +17,7 @@ export function toCategory(doc: Lean<CategoryDoc>): Category {
     slug: doc.slug,
     name: { fr: doc.name.fr, ar: doc.name.ar ?? undefined },
     sortOrder: doc.sortOrder ?? 0,
+    isActive: doc.isActive ?? true,
   };
 }
 

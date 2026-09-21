@@ -10,6 +10,10 @@ export type Category = {
   slug: string;
   name: Bilingual;
   sortOrder: number;
+  /** A hidden category stays on its books but disappears from the shop. */
+  isActive: boolean;
+  /** Only present on /api/categories, which counts them for the delete guard. */
+  bookCount?: number;
 };
 
 export type Book = {

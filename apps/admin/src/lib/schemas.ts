@@ -132,3 +132,44 @@ export const settingsSchema = z.object({
   freeKg: z.number().int().min(0),
   stopdeskByDefault: z.boolean(),
 });
+
+/** A new category. The slug is the URL the shop links to, so it is checked. */
+export const categoryCreateSchema = z.object({
+  slug: z
+    .string()
+    .trim()
+    .min(1)
+    .regex(/^[a-z0-9-]+$/, "Slug en minuscules, chiffres et tirets."),
+  name: bilingual,
+  sortOrder: z.number().int().min(0).optional(),
+  isActive: z.boolean().optional(),
+});
+
+/**
+ * An edit. The slug is absent on purpose: books point at a category by id,
+ * but the storefront links to it by slug, so renaming one would break every
+ * link already shared. Delete and recreate if it really must change.
+ */
+export const categoryPatchSchema = z
+  .object({
+    name: bilingual,
+    sortOrder: z.number().int().min(0),
+    isActive: z.boolean(),
+  })
+  .partial()
+  .refine((v) => Object.keys(v).length > 0, { message: "Rien à modifier." });
+
+/**
+ * Changing your own password.
+ *
+ * `current` is required even though the caller is already signed in: a
+ * session picked up from an unlocked laptop should not be enough to lock the
+ * owner out of their own shop.
+ */
+export const passwordChangeSchema = z.object({
+  current: z.string().min(1, "Mot de passe actuel requis."),
+  next: z
+    .string()
+    .min(10, "Au moins 10 caractères : ce compte voit les coordonnées de tous les clients.")
+    .max(200),
+});

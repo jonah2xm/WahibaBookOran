@@ -8,6 +8,8 @@ import { Loading, LoadFailed } from "@/components/Async";
 import { IconAlert, IconChevron } from "@/components/icons";
 import { Switch } from "@/components/Switch";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { CategoryManager } from "@/components/CategoryManager";
+import { PasswordChange } from "@/components/PasswordChange";
 import { wilayas } from "@/data/wilayas";
 import { api, messageFor } from "@/lib/client";
 import { pick } from "@/lib/types";
@@ -36,6 +38,8 @@ type AdminUserDto = {
 export default function SettingsPage() {
   const locale = useLocale();
   const t = useTranslations("settings");
+  const tcat = useTranslations("categories");
+  const tpw = useTranslations("password");
   const ta = useTranslations("auth");
   const tc = useTranslations("common");
 
@@ -268,6 +272,16 @@ export default function SettingsPage() {
         </p>
       </section>
 
+      {/* catégories. Its own component with its own requests: categories
+          save one at a time, not with the settings save bar below, because
+          a half-typed category name should not ride along with a price. */}
+      <section className="flex flex-col gap-2">
+        <h2 className="px-4 font-display text-body-lg font-semibold">
+          {tcat("title")}
+        </h2>
+        <CategoryManager />
+      </section>
+
       {/* contenu */}
       <section className="flex flex-col gap-2">
         <h2 className="px-4 font-display text-body-lg font-semibold">
@@ -342,6 +356,16 @@ export default function SettingsPage() {
         </h2>
         <div className={card}>
           <Row label={t("darkMode")} control={<ThemeToggle />} />
+        </div>
+      </section>
+
+      {/* compte */}
+      <section className="flex flex-col gap-2">
+        <h2 className="px-4 font-display text-body-lg font-semibold">
+          {tpw("account")}
+        </h2>
+        <div className={card}>
+          <PasswordChange />
         </div>
       </section>
 

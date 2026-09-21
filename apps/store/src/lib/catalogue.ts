@@ -113,23 +113,36 @@ export async function getHomeRails() {
   await connectDb();
   const map = await slugById();
 
+  // Fixed rail sizes. The home page is a shop window, not the catalogue:
+  // everything is one tap away on /livres, and a rail that grows with the
+  // catalogue turns the landing page into a scroll.
+  const NEW_ARRIVALS = 5;
+  const BEST_SELLERS = 6;
+
   const [newArrivals, bestSellers, newest] = await Promise.all([
     BookModel.find({ isActive: true, isNewArrival: true })
       .sort({ createdAt: -1 })
-      .limit(10)
+      .limit(NEW_ARRIVALS)
       .lean(),
-    BookModel.find({ isActive: true, isBestSeller: true }).limit(10).lean(),
-    BookModel.find({ isActive: true }).sort({ createdAt: -1 }).limit(10).lean(),
+    BookModel.find({ isActive: true, isBestSeller: true })
+      .limit(BEST_SELLERS)
+      .lean(),
+    // Fallback for a shop where nothing is flagged yet. Fetched at the larger
+    // of the two sizes and sliced per rail below.
+    BookModel.find({ isActive: true })
+      .sort({ createdAt: -1 })
+      .limit(Math.max(NEW_ARRIVALS, BEST_SELLERS))
+      .lean(),
   ]);
 
   const fallback = newest.map((d) => toBook(d, map));
   return {
     newArrivals: newArrivals.length
       ? newArrivals.map((d) => toBook(d, map))
-      : fallback,
+      : fallback.slice(0, NEW_ARRIVALS),
     bestSellers: bestSellers.length
       ? bestSellers.map((d) => toBook(d, map))
-      : fallback,
+      : fallback.slice(0, BEST_SELLERS),
   };
 }
 
