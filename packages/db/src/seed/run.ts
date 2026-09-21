@@ -56,9 +56,12 @@ const force = args.has("--force");
  * flag this loads .env.local and seeds development; with
  * `--env=.env.production.local` it seeds production.
  *
- * Order matters: dotenv never overwrites a variable that is already set, so
- * the FIRST file to define MONGODB_URI wins. Loading the chosen file first is
- * what stops the dev .env.local below from quietly taking over.
+ * It is the ONLY file read when given. Loading the dev .env.local alongside
+ * it looks harmless — dotenv never overwrites an already-set variable, so the
+ * database stays correct — but anything the chosen file leaves out silently
+ * falls through to development. That is how a production run picked up the
+ * dev SEED_ADMIN_PASSWORD instead of generating one: the variable was
+ * commented out on purpose, and .env.local filled the gap.
  */
 const envFlag = [...args]
   .find((a) => a.startsWith("--env="))
@@ -73,13 +76,13 @@ if (envFlag) {
     process.exit(1);
   }
   dotenv.config({ path: file });
-  console.log(`Env file: ${path.relative(root, file)}`);
+  console.log(`Env file: ${path.relative(root, file)} (only)`);
+} else {
+  // Same files the apps read, so the script and the app cannot point at
+  // different databases by accident.
+  dotenv.config({ path: path.join(root, ".env.local") });
+  dotenv.config({ path: path.join(root, "apps/admin/.env.local") });
 }
-
-// Same files the apps read, so the script and the app cannot point at
-// different databases by accident.
-dotenv.config({ path: path.join(root, ".env.local") });
-dotenv.config({ path: path.join(root, "apps/admin/.env.local") });
 
 /**
  * `mongodb+srv://` needs a DNS SRV lookup, and Node does that itself with

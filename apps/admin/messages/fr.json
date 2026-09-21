@@ -72,12 +72,11 @@
     "soldOut": "Épuisé",
     "hidden": "masqué",
     "add": "Ajouter un livre",
-    "none": "Aucun livre ne correspond.",
-    "addHint": "La création de livres arrive avec la base de données (Phase 1)."
+    "none": "Aucun livre ne correspond."
   },
   "editor": {
     "title": "Modifier le livre",
-    "coverHint": "Recadrage imposé 2:3. JPG ou PNG, 2 Mo max.",
+    "coverHint": "Format 2:3. JPG, PNG ou WebP, 8 Mo max.",
     "replace": "Remplacer",
     "french": "Français",
     "arabic": "العربية",
@@ -97,7 +96,11 @@
     "save": "Enregistrer",
     "saved": "Enregistré",
     "notFound": "Livre introuvable.",
-    "stockElsewhere": "Se modifie dans Stock."
+    "stockElsewhere": "Se modifie dans Stock.",
+    "coverUploading": "Envoi…",
+    "coverRemove": "Retirer la couverture",
+    "coverType": "Format d’image non accepté : JPG, PNG ou WebP.",
+    "coverTooBig": "Image trop lourde : 8 Mo maximum."
   },
   "sales": {
     "title": "Ventes",
@@ -239,5 +242,20 @@
     "save": "Enregistrer",
     "inactive": "désactivé",
     "notLiveYet": "Ces valeurs sont enregistrées, mais la boutique ne les lit pas encore : le calcul des frais utilise toujours les constantes du code. Le branchement arrive avec les identifiants Yalidine."
+  },
+  "newBook": {
+    "title": "Nouveau livre",
+    "intro": "Le minimum pour qu’un livre existe. Le résumé, l’arabe, l’ISBN et l’éditeur s’ajoutent ensuite dans la fiche.",
+    "slug": "Adresse du livre",
+    "slugHint": "Apparaît dans le lien public : /livre/mon-livre. Se remplit tout seul, modifiable.",
+    "openingStock": "Stock initial",
+    "openingStockHint": "Les exemplaires déjà en rayon. Enregistré comme une entrée dans le registre, pas écrit à la main.",
+    "openingReason": "stock initial",
+    "create": "Créer le livre",
+    "afterHint": "Vous pourrez tout compléter juste après.",
+    "requiredTitle": "Le titre est obligatoire.",
+    "requiredAuthor": "L’auteur est obligatoire.",
+    "requiredSlug": "L’adresse ne peut pas être vide.",
+    "requiredPrice": "Indiquez un prix."
   }
 }

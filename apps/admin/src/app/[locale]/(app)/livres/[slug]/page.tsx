@@ -4,6 +4,7 @@ import { use, useCallback, useEffect, useMemo, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { Loading, LoadFailed } from "@/components/Async";
+import { CoverUpload } from "@/components/CoverUpload";
 import { IconAlert, IconChevron } from "@/components/icons";
 import { api, messageFor } from "@/lib/client";
 import { pick, type Book, type Category } from "@/lib/types";
@@ -105,6 +106,25 @@ export default function BookEditorPage({
   const set = <K extends keyof Draft>(key: K, value: Draft[K]) =>
     setDraft((d) => (d ? { ...d, [key]: value } : d));
 
+  /**
+   * The cover saves immediately rather than joining the draft.
+   *
+   * The image is already on Cloudinary by the time this runs — there is no
+   * "unsaved cover" to hold. Leaving it in the draft would mean navigating
+   * away discards a URL whose file was uploaded anyway, which is how an
+   * account fills with images nothing references.
+   */
+  async function saveCover(coverUrl: string | null) {
+    setSaveError(null);
+    try {
+      setBook(await api.patch<Book>(`/api/books/${slug}`, { coverUrl }));
+      setSaved(true);
+      window.setTimeout(() => setSaved(false), 3500);
+    } catch (e) {
+      setSaveError(messageFor(e, tc("saveFailed")));
+    }
+  }
+
   async function save() {
     if (!draft) return;
     // Weight drives the Yalidine tariff; a book without it cannot be quoted,
@@ -164,20 +184,37 @@ export default function BookEditorPage({
       {/* cover */}
       <section className="flex gap-3 px-4">
         <div className="w-[88px] shrink-0 overflow-hidden rounded-cover bg-sand">
-          <div className="flex aspect-[2/3] items-end p-2">
-            <span className="font-display line-clamp-3 text-micro text-ink-muted">
-              {pick(book.title, locale)}
-            </span>
-          </div>
+          {book.coverUrl ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={book.coverUrl}
+              alt={pick(book.title, locale)}
+              className="aspect-[2/3] w-full object-cover"
+            />
+          ) : (
+            <div className="flex aspect-[2/3] items-end p-2">
+              <span className="font-display line-clamp-3 text-micro text-ink-muted">
+                {pick(book.title, locale)}
+              </span>
+            </div>
+          )}
         </div>
         <div className="flex flex-col justify-center gap-2">
           <p className="text-caption text-ink-muted">{t("coverHint")}</p>
-          <button
-            type="button"
-            className="h-11 w-fit rounded-full border border-sand-deep bg-surface px-4 text-caption font-semibold"
-          >
-            {t("replace")}
-          </button>
+          <CoverUpload
+            slug={slug}
+            onUploaded={saveCover}
+            onError={(m) => setSaveError(m || null)}
+          />
+          {book.coverUrl ? (
+            <button
+              type="button"
+              onClick={() => saveCover(null)}
+              className="text-caption text-ink-muted underline"
+            >
+              {t("coverRemove")}
+            </button>
+          ) : null}
         </div>
       </section>
 

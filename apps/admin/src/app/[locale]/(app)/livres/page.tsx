@@ -22,7 +22,6 @@ export default function AdminBooksPage() {
   const [error, setError] = useState<string | null>(null);
   const [query, setQuery] = useState("");
   const [chip, setChip] = useState("all");
-  const [showAddHint, setShowAddHint] = useState(false);
 
   const load = useCallback(async () => {
     setError(null);
@@ -153,23 +152,10 @@ export default function AdminBooksPage() {
         </p>
       ) : null}
 
-      {/* FAB. POST /api/books exists, but a create form is its own screen —
-          until it is built this says so rather than opening nothing. */}
-      {showAddHint ? (
-        <p
-          role="status"
-          className="fixed inset-x-4 bottom-36 z-20 mx-auto max-w-[560px] rounded-card bg-ink p-3 text-center text-caption text-paper shadow-lg"
-        >
-          {t("addHint")}
-        </p>
-      ) : null}
-      <button
-        type="button"
+      {/* FAB */}
+      <Link
+        href="/livres/nouveau"
         aria-label={t("add")}
-        onClick={() => {
-          setShowAddHint(true);
-          window.setTimeout(() => setShowAddHint(false), 3000);
-        }}
         className="fixed bottom-20 end-4 z-20 grid h-14 w-14 place-items-center rounded-full bg-rose text-white shadow-lg"
       >
         <svg viewBox="0 0 24 24" className="h-7 w-7" fill="none" aria-hidden>
@@ -180,7 +166,7 @@ export default function AdminBooksPage() {
             strokeLinecap="round"
           />
         </svg>
-      </button>
+      </Link>
     </main>
   );
 }

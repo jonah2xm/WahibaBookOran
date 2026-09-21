@@ -10,11 +10,30 @@ import { NextResponse } from "next/server";
  * passe incorrect" — which is exactly the wrong thing to tell someone whose
  * database simply has no accounts in it yet.
  *
- * It returns two booleans and nothing else: no e-mails, no names, no
- * connection string, no counts. Enough to tell those three cases apart,
+ * It returns a status, a coarse reason and one boolean: no e-mails, no names,
+ * no connection string, no host, no counts. Enough to tell the cases apart,
  * not enough to help anyone attack the login.
  */
 export const dynamic = "force-dynamic";
+
+/**
+ * Why the connection failed, in one word.
+ *
+ * Deliberately a fixed vocabulary rather than the driver's message: that
+ * message carries the cluster host and sometimes the user name, and this
+ * route is public. Each of these points at a different fix, which is the
+ * whole reason for reporting it — "unreachable" alone sends you looking
+ * through Vercel logs you may not be able to see.
+ */
+function failureReason(error: unknown) {
+  const message = error instanceof Error ? error.message : String(error);
+
+  if (/bad auth|Authentication failed/i.test(message)) return "credentials";
+  if (/IP .*(not allowed|whitelist)|whitelist/i.test(message)) return "ip_not_allowed";
+  if (/querySrv|ENOTFOUND|EAI_AGAIN|getaddrinfo/i.test(message)) return "dns";
+  if (/timed out|ETIMEDOUT|ECONNREFUSED/i.test(message)) return "timeout";
+  return "unknown";
+}
 
 export async function GET() {
   if (!process.env.MONGODB_URI) {
@@ -26,9 +45,10 @@ export async function GET() {
 
   try {
     await connectDb();
-  } catch {
+  } catch (error) {
     return NextResponse.json({
       database: "unreachable",
+      reason: failureReason(error),
       hasAdminAccount: false,
     });
   }

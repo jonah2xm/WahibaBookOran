@@ -51,7 +51,8 @@
       "title": "Livraison estimée à {city}",
       "rates": "{home} à domicile · {desk} au point de retrait",
       "note": "Le prix exact s'affiche dès le choix de la commune."
-    }
+    },
+    "metaDescription": "{title}, de {author}. Disponible chez BookOran31 — livraison partout en Algérie, paiement à la livraison."
   },
   "cart": {
     "title": "Mon panier",

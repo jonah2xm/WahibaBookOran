@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
@@ -10,9 +11,58 @@ import { getBook, getSameAuthor } from "@/lib/catalogue";
 import { ESTIMATED_DELIVERY_DZD } from "@/lib/geo";
 import { pick, stockState } from "@/lib/types";
 import { formatDzd } from "@/lib/format";
+import { absolute, localeAlternates } from "@/lib/site";
 
 // No generateStaticParams: the catalogue is editable in the admin, so the
 // set of book pages changes without a rebuild. These render on demand.
+
+/**
+ * A book's own title and summary, in the visitor's language.
+ *
+ * Without this every page in the shop shares one title, so a search result
+ * for a book reads "BookOran31" and a shared link says nothing about what is
+ * being shared. The summary is the shop's own copy, so there is nothing to
+ * invent here.
+ */
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string; slug: string }>;
+}): Promise<Metadata> {
+  const { locale, slug } = await params;
+  const book = await getBook(slug);
+  if (!book) return {};
+
+  const bookTitle = pick(book.title, locale);
+  const author = pick(book.author, locale);
+  const title = `${bookTitle} — ${author}`;
+
+  // Most of the catalogue has no summary yet, and a book page with no
+  // description at all is a wasted search result. The fallback says only what
+  // the record already knows — it never invents anything about the book.
+  const t = await getTranslations({ locale, namespace: "book" });
+  const description = book.summary?.fr
+    ? pick(book.summary, locale).slice(0, 200)
+    : t("metaDescription", { title: bookTitle, author });
+
+  const path = `/livre/${book.slug}`;
+
+  return {
+    title,
+    description,
+    alternates: {
+      canonical: absolute(`/${locale}${path}`),
+      languages: localeAlternates(path),
+    },
+    openGraph: {
+      title,
+      description,
+      type: "website",
+      locale,
+      url: absolute(`/${locale}${path}`),
+    },
+  };
+}
 
 /** S4 — Fiche livre, barre d'action collante. */
 export default async function BookPage({

@@ -22,6 +22,10 @@ export default function CheckoutPage() {
   const locale = useLocale();
   const t = useTranslations("checkout");
   const tn = useTranslations("nav");
+  // Same source as every other "call us" link in the shop. This one used to
+  // be a hardcoded number, which meant changing the shop's phone fixed three
+  // places and left the fourth calling a stranger.
+  const tb = useTranslations("brand");
   const router = useRouter();
   const { lines, subtotal, ready, clear } = useCart();
 
@@ -424,7 +428,7 @@ export default function CheckoutPage() {
                 {t("feeUnavailable")}
               </span>
               <a
-                href="tel:0555312408"
+                href={`tel:${tb("phone").replace(/\s/g, "")}`}
                 className="grid h-11 place-items-center rounded-full border border-warning/40 text-caption font-semibold text-warning"
               >
                 {t("callMe")}

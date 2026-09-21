@@ -12,6 +12,7 @@
     "seed": "tsx src/seed/run.ts",
     "seed:reset": "tsx src/seed/run.ts --reset",
     "seed:prod": "tsx src/seed/run.ts --env=.env.production.local",
+    "admin:password": "tsx src/seed/set-password.ts",
     "typecheck": "tsc --noEmit",
     "seed:demo": "tsx src/seed/demo-orders.ts",
     "seed:demo:clear": "tsx src/seed/demo-orders.ts --clear"

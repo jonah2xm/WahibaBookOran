@@ -31,6 +31,18 @@ export const bookPatchSchema = z
     author: bilingual,
     summary: optionalBilingual.nullable(),
     categorySlugs: z.array(z.string().trim().min(1)),
+    // Only ever a Cloudinary URL on our own cloud, or null to clear it. A
+    // free-form URL here would let the admin point a book's cover at any
+    // site on the internet, which is a stored-content hole and a broken
+    // image waiting to happen. The upload route is the only way in.
+    coverUrl: z
+      .string()
+      .url()
+      .refine(
+        (u) => u.startsWith("https://res.cloudinary.com/"),
+        "Une image envoyée depuis cet écran, pas un lien externe.",
+      )
+      .nullable(),
     priceDzd: centimes,
     compareAtPriceDzd: centimes.nullable(),
     // Required by the database because Yalidine bills by weight. Saying so

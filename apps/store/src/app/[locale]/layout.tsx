@@ -6,6 +6,7 @@ import { routing, dirFor } from "@/i18n/routing";
 import { TabBar } from "@/components/TabBar";
 import { CartProvider } from "@/components/CartProvider";
 import { OfflineBanner } from "@/components/OfflineBanner";
+import { SITE_URL } from "@/lib/site";
 import "../globals.css";
 
 const fraunces = Fraunces({
@@ -28,7 +29,15 @@ const tajawal = Tajawal({
 });
 
 export const metadata: Metadata = {
-  title: "BookOran31",
+  // Without metadataBase, every relative URL in a page's metadata resolves
+  // against localhost and the shop advertises itself as unreachable.
+  metadataBase: new URL(SITE_URL),
+  // The pattern is what makes a page's own title show up as
+  // "L'Étranger — Albert Camus · BookOran31" rather than replacing the brand.
+  title: {
+    default: "BookOran31",
+    template: "%s · BookOran31",
+  },
   description: "Des livres choisis, livrés partout en Algérie.",
 };
 

@@ -54,6 +54,7 @@ export const PATCH = route<Params>(async ({ req, params }) => {
       return id;
     });
   }
+  if (patch.coverUrl !== undefined) update.coverUrl = patch.coverUrl;
   if (patch.priceDzd !== undefined) update.priceDzd = patch.priceDzd;
   if (patch.compareAtPriceDzd !== undefined) {
     update.compareAtPriceDzd = patch.compareAtPriceDzd;

@@ -25,16 +25,16 @@ index and the /recherche screen were removed in favour of one **Tous les livres*
 the URL. Board screens S2, S2b and S3 no longer describe the built app.
 
 Built against the Claude Design board `BookOran31.dc.html`
-(project `b24adc68-6601-4e56-99d5-44e01595b888`). Still stubbed, all flagged in-file:
+(project `b24adc68-6601-4e56-99d5-44e01595b888`).
 
-- Catalogue and dashboard figures are seed data (`apps/store/src/data/catalogue.ts`,
-  `apps/admin/src/data/stub.ts`). Mongo replaces both in Phase 1.
-- Checkout quotes against `POST /api/quote`, which prices from a local zone table.
-  **That route and `apps/store/src/lib/geo.ts` are the only two files Yalidine touches.**
-- Orders live in localStorage, not a database.
-- Admin auth is one env account in `apps/admin/.env.local`, compared in plain text.
-  Phase 1 moves it to `adminUsers` + bcrypt. **Do not deploy the admin before that.**
-- Conditions sections 4–5 are drafts I wrote; the owner must review them.
+Still stubbed, all flagged in-file:
+
+- Delivery fees come from the zone table in `apps/store/src/lib/geo.ts`, and
+  the commune list is ~40 of ~1541. **That file and `src/lib/quote.ts` are the
+  only two Yalidine touches.**
+- Books with no cover yet render a tinted placeholder from `coverTint`.
+  Uploading one replaces it; the catalogue is otherwise unchanged.
+- Conditions sections 4—5 are drafts I wrote; the owner must review them.
 
 ---
 
@@ -434,10 +434,13 @@ YALIDINE_API_ID=
 YALIDINE_API_TOKEN=
 YALIDINE_FROM_WILAYA_ID=
 
-# media
+# apps/admin — book covers. The cloud name is public (it is inside every
+# delivery URL); the key and secret are server-only. The secret can delete the
+# whole media library, so it never gets a NEXT_PUBLIC_ prefix.
 CLOUDINARY_CLOUD_NAME=
 CLOUDINARY_API_KEY=
 CLOUDINARY_API_SECRET=
+CLOUDINARY_FOLDER=bookoran31/covers
 ```
 
 ---
@@ -471,14 +474,49 @@ seed — which can be handed `DNS_SERVERS` — ever talks to Atlas from here.
 npm run seed:prod --workspace @bookoran/db
 ```
 
-That is `run.ts --env=.env.production.local`. Loading that file first is what
-makes it win: dotenv never overwrites a variable that is already set, so the
-dev `.env.local` loaded straight afterwards cannot take the target back.
+That is `run.ts --env=.env.production.local`, and that file is then the **only**
+one read. Loading the dev `.env.local` alongside it looks harmless, since
+dotenv never overwrites an already-set variable — but anything the production
+file omits falls through to development. That bit once: `SEED_ADMIN_PASSWORD`
+was commented out so the seed would generate a strong one, and `.env.local`
+quietly supplied the dev password instead.
 
 The script prints the database name and a banner before it writes anything,
 refuses a URI that names no database, and refuses `--reset` against a
 non-local database without `--force`. It never creates orders, and
 `seed:demo` refuses a non-local database outright.
+
+### Book covers
+
+The browser uploads straight to Cloudinary. `POST /api/uploads/signature`
+signs ONE upload, for `public_id = <folder>/<slug>`, and only for a book that
+exists — it cannot be used to overwrite an unrelated asset. The file never
+passes through our own server: Vercel caps a function request body at 4.5 MB
+and a phone photo clears that easily.
+
+Signed, not an unsigned preset: an unsigned preset is readable in page source
+and lets anyone upload anything to the account.
+
+The URL stored on the book is built, not Cloudinary's `secure_url` — that one
+serves the original file. The stored one carries `f_auto,q_auto,c_fill,ar_2:3,w_600`,
+so the shop sends a ~2 KB WebP over a mobile connection. Because the public_id
+is the slug, re-uploading replaces the old file instead of orphaning it.
+
+`coverUrl` in the PATCH schema only accepts a `res.cloudinary.com` URL. A
+free-form one would let the admin point a book's cover at any site.
+
+### Changing an admin password
+
+```bash
+npm run admin:password --workspace @bookoran/db -- --env=.env.production.local --email=owner@example.com
+```
+
+The seed never touches an account that already exists, and the admin UI has no
+password field — `passwordHash` is `select: false` and `/api/users` edits
+names, roles and status only. So this script is the only way to change one:
+forgotten, shared, or leaked. It generates the new password and prints it once.
+There is no `--password` flag on purpose; a password typed on a command line
+lands in your shell history.
 
 ### The admin needs an account CREATED, not configured
 
@@ -536,17 +574,29 @@ the wrong half would tell an attacker which e-mails exist.
 
 ## 11. Build phases
 
-| Phase | Work | Output | Est. |
-|---|---|---|---|
-| **0 — Foundation** | npm-workspace monorepo, both Next apps, Tailwind tokens from the design brief, Mongo connection, next-intl + RTL, shared UI primitives | Both apps boot, locale switch works, DB connects | 1–2 d |
-| **1 — Data & admin core** | ~~Mongoose models~~, ~~seed script~~ (done), API routes replacing the localStorage stubs, NextAuth against `adminUsers` + bcrypt, cover upload | You can enter your real catalogue | 1–2 d |
-| **2 — Storefront catalogue** | ~~Home, listing, search, filters, book detail, bottom nav, cart~~ — done, reading from Mongo | Browsable shop | ✓ |
-| **3 — Checkout + Yalidine** | ~~Pickers, quote endpoint, fee display, order creation, confirmation, tracking~~ — done. Remaining: the real Yalidine client, its cache, parcel creation and labels | End-to-end purchase works; live tariffs pending credentials | 1–2 d once credentials arrive |
-| **4 — Sales management** | Order pipeline, detail, status transitions, parcel creation, label print, cron status sync | You can run the business | 2–3 d |
-| **5 — Stock** | Movement ledger, adjustments, low-stock alerts | Stock you can trust | 1–2 d |
-| **6 — Agreement, polish, ship** | Agreement editor + public page, Arabic pass, empty/error states, SEO, Vercel deploy | Live | 2 d |
+Status as of 2026-09-21. Everything not marked blocked is done.
 
-Roughly **2.5–3 weeks** of focused solo work. Phases 0–2 need none of the open items below.
+| Phase | Work | Status |
+|---|---|---|
+| **0 — Foundation** | monorepo, both Next apps, Tailwind tokens, Mongo connection, next-intl + RTL, shared primitives | ✓ |
+| **1 — Data & admin core** | models, seed, API routes, NextAuth against `adminUsers` + bcrypt, book list / editor / creation, **cover upload** | ✓ |
+| **2 — Storefront catalogue** | home, listing, search, filters, book detail, bottom nav, cart, all reading from Mongo | ✓ |
+| **3 — Checkout** | pickers, quote endpoint, fee display, order creation, confirmation, tracking | ✓ on the stub tariff table |
+| **4 — Sales management** | order pipeline, detail, status transitions | ✓ |
+| **5 — Stock** | movement ledger, adjustments, low-stock filter, opening stock on creation | ✓ |
+| **6 — Agreement, polish, ship** | agreement editor + public page, Arabic pass, empty/error states, SEO, deploy | ✓ except the live deploy |
+
+### What is actually left
+
+**Blocked on Yalidine credentials** (items 1—2 below): the real API client and
+its cache, live tariffs replacing the zone table in `apps/store/src/lib/geo.ts`,
+the real commune list (~1541 against ~40 stubbed), parcel creation, label
+printing, and the status-sync cron. Phases 3 and 4 are complete in every other
+respect and the swap point is deliberately two files.
+
+**Not blocked, not built**: inviting a second admin user (`POST /api/users`),
+editing categories from the admin, and a sales report endpoint. None of them
+stop the shop running.
 
 ---
 
