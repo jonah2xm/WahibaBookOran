@@ -84,14 +84,7 @@ export default async function HomePage({
               ),
             })}
           </h1>
-          <div className="mt-6 flex flex-wrap gap-2">
-            <span className={chip}>
-              {t("freeShipping", {
-                amount: formatDzd(settings.freeShippingThresholdDzd),
-              })}
-            </span>
-            <span className={chip}>{t("cod")}</span>
-          </div>
+
         </div>
       </section>
 
