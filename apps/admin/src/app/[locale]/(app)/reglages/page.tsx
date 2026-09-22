@@ -10,6 +10,7 @@ import { Switch } from "@/components/Switch";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { CategoryManager } from "@/components/CategoryManager";
 import { PasswordChange } from "@/components/PasswordChange";
+import { SelectSheet } from "@/components/SelectSheet";
 import { wilayas } from "@/data/wilayas";
 import { api, messageFor } from "@/lib/client";
 import { pick } from "@/lib/types";
@@ -50,6 +51,7 @@ export default function SettingsPage() {
   const [loadError, setLoadError] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [note, setNote] = useState<string | null>(null);
+  const [originOpen, setOriginOpen] = useState(false);
 
   const load = useCallback(async () => {
     setLoadError(null);
@@ -117,6 +119,16 @@ export default function SettingsPage() {
     }
   }
 
+  // "01 — Adrar": the number is what the Yalidine tables are keyed on, so
+  // it stays visible in the trigger and is searchable in the sheet.
+  const wilayaOptions = wilayas.map((w) => ({
+    value: String(w.id),
+    label: `${String(w.id).padStart(2, "0")} — ${pick(w.name, locale)}`,
+  }));
+  const originLabel =
+    wilayaOptions.find((o) => o.value === String(draft.originWilayaId))
+      ?.label ?? "";
+
   const field =
     "h-11 w-full rounded-input border border-sand-deep bg-surface px-4 text-body outline-none placeholder:text-ink-faint focus:border-rose";
   const label = "text-micro uppercase tracking-[0.06em] text-ink-muted";
@@ -157,22 +169,18 @@ export default function SettingsPage() {
 
           <label className="flex flex-col gap-1.5">
             <span className={label}>{t("originWilaya")}</span>
-            <select
-              className={field}
-              value={draft.originWilayaId}
-              onChange={(e) => {
-                const id = Number(e.target.value);
-                const w = wilayas.find((x) => x.id === id);
-                set("originWilayaId", id);
-                if (w) set("originWilayaName", w.name.fr);
-              }}
+            <button
+              type="button"
+              onClick={() => setOriginOpen(true)}
+              aria-haspopup="dialog"
+              aria-expanded={originOpen}
+              className={`${field} flex items-center justify-between gap-2 text-start`}
             >
-              {wilayas.map((w) => (
-                <option key={w.id} value={w.id}>
-                  {w.id} — {pick(w.name, locale)}
-                </option>
-              ))}
-            </select>
+              <span className="line-clamp-1">{originLabel}</span>
+              <span className="shrink-0 rotate-90 text-ink-muted">
+                <IconChevron className="h-4 w-4" />
+              </span>
+            </button>
             <span className="flex items-start gap-1.5 text-caption text-ink-muted">
               <IconAlert className="h-4 w-4 shrink-0 text-rose" />
               {t("originHint")}
@@ -408,6 +416,22 @@ export default function SettingsPage() {
           </button>
         </div>
       </div>
+      <SelectSheet
+        open={originOpen}
+        searchable
+        title={t("originWilaya")}
+        value={String(draft.originWilayaId)}
+        options={wilayaOptions}
+        onPick={(v) => {
+          const id = Number(v);
+          const w = wilayas.find((x) => x.id === id);
+          set("originWilayaId", id);
+          // The name is stored alongside the id so the quote code never has
+          // to look it up; it must move with it.
+          if (w) set("originWilayaName", w.name.fr);
+        }}
+        onClose={() => setOriginOpen(false)}
+      />
     </main>
   );
 }

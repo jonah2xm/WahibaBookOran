@@ -7,7 +7,10 @@
     "saved": "حُفظ",
     "sessionExpired": "انتهت الجلسة — أعد تسجيل الدخول.",
     "offline": "تعذّر الوصول إلى الخادم.",
-    "cancel": "إلغاء"
+    "cancel": "إلغاء",
+    "close": "إغلاق",
+    "search": "بحث…",
+    "noMatch": "لا نتيجة"
   },
   "brand": {
     "name": "BookOran31"

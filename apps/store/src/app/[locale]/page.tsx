@@ -92,7 +92,7 @@ export default async function HomePage({
         </div>
         <div className="rail mt-3 flex gap-3 overflow-x-auto px-4 pb-1">
           {newArrivals.map((b) => (
-            <BookCard key={b.slug} book={b} width={124} />
+            <BookCard key={b.slug} book={b} width={124} addable />
           ))}
         </div>
       </section>
@@ -102,7 +102,7 @@ export default async function HomePage({
         <h2 className="px-4 font-display text-title">{t("bestSellers")}</h2>
         <div className="mt-3 grid grid-cols-2 gap-x-3 gap-y-5 px-4">
           {bestSellers.map((b) => (
-            <BookCard key={b.slug} book={b} />
+            <BookCard key={b.slug} book={b} addable />
           ))}
         </div>
       </section>

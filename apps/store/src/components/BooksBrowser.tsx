@@ -6,6 +6,7 @@ import { useSearchParams } from "next/navigation";
 import { usePathname, useRouter } from "@/i18n/navigation";
 import { BookCard } from "./BookCard";
 import { PriceSheet } from "./PriceSheet";
+import { SelectSheet } from "./SelectSheet";
 import { IconChevron, IconSearch } from "./icons";
 import {
   SORT_KEYS,
@@ -45,6 +46,7 @@ export function BooksBrowser({
   const pathname = usePathname();
   const params = useSearchParams();
   const [priceOpen, setPriceOpen] = useState(false);
+  const [sortOpen, setSortOpen] = useState(false);
   const activeChipRef = useRef<HTMLButtonElement>(null);
 
   const query = params.get("q") ?? "";
@@ -184,28 +186,19 @@ export function BooksBrowser({
 
         {/* sort + price */}
         <div className="flex items-center gap-2 px-4">
-          <span className="relative flex flex-1 items-center">
-            <select
-              value={filters.sort}
-              aria-label={t("sortLabel")}
-              onChange={(e) =>
-                push(
-                  { filters: { ...filters, sort: e.target.value as SortKey } },
-                  "push",
-                )
-              }
-              className="h-10 w-full appearance-none rounded-full border border-sand-deep bg-surface ps-4 pe-9 text-caption font-medium text-ink outline-none"
-            >
-              {SORT_KEYS.map((s) => (
-                <option key={s} value={s}>
-                  {tf(s)}
-                </option>
-              ))}
-            </select>
-            <span className="pointer-events-none absolute end-3 rotate-90 text-ink-muted">
+          <button
+            type="button"
+            onClick={() => setSortOpen(true)}
+            aria-haspopup="dialog"
+            aria-expanded={sortOpen}
+            aria-label={t("sortLabel")}
+            className="flex h-10 flex-1 items-center justify-between gap-2 rounded-full border border-sand-deep bg-surface ps-4 pe-3 text-caption font-medium text-ink"
+          >
+            <span className="line-clamp-1">{tf(filters.sort)}</span>
+            <span className="shrink-0 rotate-90 text-ink-muted">
               <IconChevron className="h-3.5 w-3.5" />
             </span>
-          </span>
+          </button>
 
           <button
             type="button"
@@ -278,7 +271,7 @@ export function BooksBrowser({
       {results.length > 0 ? (
         <div className="mt-4 grid grid-cols-2 gap-x-3 gap-y-5 px-4 pb-6">
           {results.map((b) => (
-            <BookCard key={b.slug} book={b} />
+            <BookCard key={b.slug} book={b} addable />
           ))}
         </div>
       ) : (
@@ -295,6 +288,15 @@ export function BooksBrowser({
           </button>
         </section>
       )}
+
+      <SelectSheet
+        open={sortOpen}
+        title={t("sortLabel")}
+        value={filters.sort}
+        options={SORT_KEYS.map((s) => ({ value: s, label: tf(s) }))}
+        onPick={(sort) => push({ filters: { ...filters, sort } }, "push")}
+        onClose={() => setSortOpen(false)}
+      />
 
       <PriceSheet
         open={priceOpen}

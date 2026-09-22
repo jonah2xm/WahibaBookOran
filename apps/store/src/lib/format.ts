@@ -28,6 +28,20 @@ export function formatDzd(centimes: number): string {
   return `${LRI}${dinars < 0 ? "-" : ""}${grouped}${NBSP}DA${PDI}`;
 }
 
+/**
+ * Wraps a run of text whose direction is not the sentence's — a French book
+ * title inside an Arabic sentence, or the reverse.
+ *
+ * First-strong isolate rather than the LRI above: the title picks its own
+ * direction from its first letter, so the same helper works both ways.
+ * Without it, "Ajouter {title} au panier" reorders around a title in Arabic.
+ */
+const FSI = "⁨";
+
+export function isolate(text: string): string {
+  return `${FSI}${text}${PDI}`;
+}
+
 /** 0555312408 -> "0555 31 24 08" */
 export function formatPhone(raw: string): string {
   const d = raw.replace(/\D/g, "");

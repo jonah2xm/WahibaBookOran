@@ -5,6 +5,7 @@ import { Fraunces, Plus_Jakarta_Sans, Tajawal } from "next/font/google";
 import { routing, dirFor } from "@/i18n/routing";
 import { TabBar } from "@/components/TabBar";
 import { CartProvider } from "@/components/CartProvider";
+import { ToastProvider } from "@/components/ToastProvider";
 import { OfflineBanner } from "@/components/OfflineBanner";
 import { SITE_URL } from "@/lib/site";
 import "../globals.css";
@@ -64,6 +65,9 @@ export default async function LocaleLayout({
       <body>
         <NextIntlClientProvider>
           <CartProvider>
+            {/* Inside CartProvider so a toast can be raised from anything
+                that touches the cart, and inside the frame it pins itself to. */}
+            <ToastProvider>
             {/* Phone-first: the board's frame is 390px. On wider screens the
                 shop stays phone-width on the canvas backdrop rather than
                 stretching into a layout nobody designed. */}
@@ -72,6 +76,7 @@ export default async function LocaleLayout({
               <div className="flex-1">{children}</div>
               <TabBar />
             </div>
+            </ToastProvider>
           </CartProvider>
         </NextIntlClientProvider>
       </body>

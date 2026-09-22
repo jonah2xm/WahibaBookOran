@@ -217,7 +217,7 @@ export default async function BookPage({
           <h2 className="px-4 font-display text-title">{t("sameAuthor")}</h2>
           <div className="rail mt-3 flex gap-3 overflow-x-auto px-4 pb-1">
             {others.map((b) => (
-              <BookCard key={b.slug} book={b} width={124} />
+              <BookCard key={b.slug} book={b} width={124} addable />
             ))}
           </div>
         </section>

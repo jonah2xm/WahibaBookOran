@@ -80,3 +80,15 @@ export const IconChevron = ({ className = "h-4 w-4" }: IconProps) => (
     <path d="m9 5 7 7-7 7" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
   </svg>
 );
+
+export const IconSearch = ({ className = base }: IconProps) => (
+  <svg viewBox="0 0 24 24" fill="none" className={className} aria-hidden>
+    <circle cx="11" cy="11" r="7" stroke="currentColor" strokeWidth="1.8" />
+    <path
+      d="m16.5 16.5 4 4"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+    />
+  </svg>
+);

@@ -1,12 +1,12 @@
 "use client";
 
-import { useState } from "react";
-import { useTranslations } from "next-intl";
-import { useRouter } from "@/i18n/navigation";
-import { stockState, type Book } from "@/lib/types";
+import { useEffect, useRef, useState } from "react";
+import { useLocale, useTranslations } from "next-intl";
+import { stockState, pick, type Book } from "@/lib/types";
 import { QuantityStepper } from "./QuantityStepper";
 import { useCart } from "./CartProvider";
-import { formatDzd } from "@/lib/format";
+import { useToast } from "./ToastProvider";
+import { formatDzd, isolate } from "@/lib/format";
 
 /**
  * S4 quantity + sticky action bar. The bar carries the running total, which
@@ -14,15 +14,53 @@ import { formatDzd } from "@/lib/format";
  */
 export function BookActions({ book }: { book: Book }) {
   const t = useTranslations("book");
-  const router = useRouter();
-  const { add } = useCart();
+  const tc = useTranslations("cart");
+  const locale = useLocale();
+  const { add, lines } = useCart();
+  const toast = useToast();
   const [quantity, setQuantity] = useState(1);
+  const [justAdded, setJustAdded] = useState(false);
+  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const out = stockState(book).kind === "out";
 
+  useEffect(
+    () => () => {
+      if (timer.current) clearTimeout(timer.current);
+    },
+    [],
+  );
+
+  /**
+   * What the customer can still add, not what the shop holds.
+   *
+   * Adding used to send them to the cart, so a second helping was a fresh
+   * visit that re-read the cart. Now that the page stays put, repeated taps
+   * would walk straight past the stock without this.
+   */
+  const inCart = lines.find((l) => l.slug === book.slug)?.quantity ?? 0;
+  const remaining = Math.max(0, book.stockOnHand - inCart);
+  const atCap = !out && remaining === 0;
+
+  // Whatever is left may be smaller than what the stepper is showing from
+  // before the last add, so the quantity is clamped on the way out too.
+  const effective = Math.min(quantity, remaining);
+
+  useEffect(() => {
+    if (quantity > remaining && remaining > 0) setQuantity(remaining);
+  }, [quantity, remaining]);
+
   function addToCart() {
-    add(book.slug, quantity);
-    // navigating to the cart gives the customer immediate proof it landed
-    router.push("/panier");
+    if (out || atCap) return;
+    add(book.slug, effective);
+    setJustAdded(true);
+    if (timer.current) clearTimeout(timer.current);
+    timer.current = setTimeout(() => setJustAdded(false), 1400);
+    // The tab bar is hidden on S4, so its badge cannot acknowledge this —
+    // the toast is the only proof the basket changed.
+    toast({
+      message: tc("added", { title: isolate(pick(book.title, locale)) }),
+      action: { label: tc("viewCart"), href: "/panier" },
+    });
   }
 
   return (
@@ -30,9 +68,9 @@ export function BookActions({ book }: { book: Book }) {
       <div className="flex items-center justify-between px-4 py-4">
         <span className="text-body font-semibold">{t("quantity")}</span>
         <QuantityStepper
-          value={quantity}
+          value={effective || 1}
           onChange={setQuantity}
-          max={Math.max(1, book.stockOnHand)}
+          max={Math.max(1, remaining)}
         />
       </div>
 
@@ -46,16 +84,24 @@ export function BookActions({ book }: { book: Book }) {
               {t("total")}
             </span>
             <span className="lat font-display text-title">
-              {formatDzd(book.priceDzd * quantity)}
+              {formatDzd(book.priceDzd * (effective || 0))}
             </span>
           </div>
           <button
             type="button"
             onClick={addToCart}
-            disabled={out}
-            className="ms-auto h-11 flex-1 rounded-full bg-rose px-5 text-body font-semibold text-white transition-colors hover:bg-rose-hover disabled:bg-sand-deep disabled:text-ink-faint"
+            disabled={out || atCap}
+            className={`ms-auto h-11 flex-1 rounded-full px-5 text-body font-semibold text-white transition-colors disabled:bg-sand-deep disabled:text-ink-faint ${
+              justAdded ? "bg-success" : "bg-rose hover:bg-rose-hover"
+            }`}
           >
-            {out ? t("outOfStock") : t("addToCart")}
+            {out
+              ? t("outOfStock")
+              : atCap
+                ? t("allInCart")
+                : justAdded
+                  ? t("addedToCart")
+                  : t("addToCart")}
           </button>
         </div>
       </div>
