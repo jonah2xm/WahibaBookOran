@@ -199,9 +199,10 @@ export default function CheckoutPage() {
     }
   }
 
-  const field =
-    "h-11 w-full rounded-input border border-sand-deep bg-surface px-4 text-body outline-none placeholder:text-ink-faint focus:border-rose";
-  const label = "text-micro uppercase tracking-[0.06em] text-ink-muted";
+  // The board has no boxed input: a field is a micro-caps label over a
+  // hairline underline, the same rule that divides every list on the page.
+  const field = "field-underline";
+  const label = "field-label";
 
   return (
     <main className="flex flex-col pb-28">
@@ -224,7 +225,7 @@ export default function CheckoutPage() {
           <li key={s} className="flex flex-1 items-center gap-2">
             <span
               className={`lat grid h-6 w-6 shrink-0 place-items-center rounded-full text-micro ${
-                i === 0 ? "bg-rose text-white" : "bg-sand text-ink-muted"
+                i === 0 ? "bg-rose text-paper" : "bg-sand text-ink-muted"
               }`}
             >
               {i + 1}
@@ -236,7 +237,7 @@ export default function CheckoutPage() {
 
       {/* 1 · Coordonnées */}
       <section className="flex flex-col gap-3 px-4">
-        <h2 className="font-display text-body-lg font-semibold">{t("step1")}</h2>
+        <h2 className="mb-4 font-display text-[22px]">{t("step1")}</h2>
         <label className="flex flex-col gap-1.5">
           <span className={label}>{t("fullName")}</span>
           <input
@@ -272,7 +273,7 @@ export default function CheckoutPage() {
 
       {/* 2 · Livraison */}
       <section className="mt-6 flex flex-col gap-3 px-4">
-        <h2 className="font-display text-body-lg font-semibold">{t("step2")}</h2>
+        <h2 className="section-head">{t("step2")}</h2>
 
         <div className="flex flex-col gap-1.5">
           <span className={label}>{t("wilaya")}</span>
@@ -323,19 +324,17 @@ export default function CheckoutPage() {
                 type="button"
                 onClick={() => setMethod(m)}
                 aria-pressed={active}
-                className={`flex items-center gap-3 rounded-card border p-4 text-start ${
-                  active
-                    ? "border-rose bg-rose-50"
-                    : "border-sand-deep bg-surface"
+                className={`flex items-center gap-[13px] border px-4 py-[15px] text-start ${
+                  active ? "border-rose" : "border-sand-deep"
                 }`}
               >
                 <span
-                  className={`grid h-5 w-5 shrink-0 place-items-center rounded-full border-2 ${
-                    active ? "border-rose" : "border-sand-deep"
+                  className={`grid h-[18px] w-[18px] shrink-0 place-items-center rounded-full border-[1.5px] ${
+                    active ? "border-rose" : "border-ink-faint"
                   }`}
                 >
                   {active ? (
-                    <span className="h-2.5 w-2.5 rounded-full bg-rose" />
+                    <span className="h-2 w-2 rounded-full bg-rose" />
                   ) : null}
                 </span>
                 <span className="flex flex-1 flex-col">
@@ -359,9 +358,11 @@ export default function CheckoutPage() {
         {method === "home" ? (
           <label className="flex flex-col gap-1.5">
             <span className={label}>{t("address")}</span>
+            {/* The one boxed field in the board: an underline cannot
+                hold three lines of address. */}
             <textarea
-              rows={2}
-              className="w-full rounded-input border border-sand-deep bg-surface p-3 text-body outline-none placeholder:text-ink-faint focus:border-rose"
+              rows={3}
+              className="min-h-[76px] w-full resize-none border border-sand-deep bg-transparent p-3 text-[15px] outline-none placeholder:text-ink-faint focus:border-rose"
               value={address}
               onChange={(e) => setAddress(e.target.value)}
               placeholder={t("addressPh")}
@@ -370,7 +371,7 @@ export default function CheckoutPage() {
         ) : center ? (
           <div className="flex flex-col gap-1.5">
             <span className={label}>{t("center")}</span>
-            <div className="flex items-center gap-3 rounded-card border border-sand-deep bg-surface p-4">
+            <div className="flex items-center gap-3 border-y border-sand-deep py-4">
               <IconTruck className="h-5 w-5 shrink-0 text-rose" />
               <div className="flex flex-col">
                 <span className="text-body font-semibold">
@@ -385,7 +386,7 @@ export default function CheckoutPage() {
         ) : null}
 
         {/* the delivery-fee block — one place on screen, four states */}
-        <div className="mt-2 flex flex-col gap-2 rounded-card border border-sand-deep bg-surface p-3.5">
+        <div className="mt-2 flex flex-col gap-2 border-y border-sand-deep py-3.5">
           <span className={label}>{t("feeTitle")}</span>
 
           {fee.kind === "idle" ? (
@@ -405,7 +406,7 @@ export default function CheckoutPage() {
           ) : null}
 
           {fee.kind === "ok" ? (
-            <div className="flex min-h-11 items-center justify-between gap-2.5 rounded-input bg-rose-50 px-3 py-2">
+            <div className="flex min-h-11 items-center justify-between gap-2.5 bg-rose-50 px-3 py-2">
               <span className="flex flex-col">
                 <span className="text-body font-semibold">
                   {commune ? pick(commune.name, locale) : ""}
@@ -423,13 +424,13 @@ export default function CheckoutPage() {
           ) : null}
 
           {fee.kind === "unavailable" ? (
-            <div className="flex flex-col gap-2.5 rounded-input bg-warning/10 p-3">
+            <div className="flex flex-col gap-2.5 bg-warning/10 p-3">
               <span className="text-caption text-ink">
                 {t("feeUnavailable")}
               </span>
               <a
                 href={`tel:${tb("phone").replace(/\s/g, "")}`}
-                className="grid h-11 place-items-center rounded-full border border-warning/40 text-caption font-semibold text-warning"
+                className="grid place-items-center rounded-pill border border-warning py-3 text-caption font-semibold text-warning"
               >
                 {t("callMe")}
               </a>
@@ -440,7 +441,7 @@ export default function CheckoutPage() {
 
       {/* 3 · Récapitulatif */}
       <section className="mt-6 flex flex-col gap-2 px-4">
-        <h2 className="font-display text-body-lg font-semibold">{t("step3")}</h2>
+        <h2 className="section-head">{t("step3")}</h2>
         <ul className="flex flex-col gap-1.5">
           {lines.map((l) => (
             <li key={l.slug} className="flex items-baseline justify-between gap-3">
@@ -475,31 +476,36 @@ export default function CheckoutPage() {
             </span>
           )}
         </div>
-        <div className="flex items-baseline justify-between border-t border-sand-deep pt-3">
-          <span className="text-body-lg font-semibold">{t("total")}</span>
-          <span className="lat font-display text-display">
+        <div className="flex items-baseline justify-between border-b-2 border-ink pb-3.5" />
+        <div className="flex items-baseline justify-between pb-[22px] pt-4">
+          <span className="font-display text-[22px]">{t("total")}</span>
+          <span className="lat font-display text-[28px] font-bold tracking-[-0.02em]">
             {formatDzd(total)}
           </span>
         </div>
 
-        <div className="mt-3 flex gap-3 rounded-card bg-sand p-4">
-          <IconWallet className="h-5 w-5 shrink-0 text-rose" />
+        <div className="relative flex gap-3 overflow-hidden bg-sand px-[18px] py-4">
+          <span className="rule-tricolour absolute inset-x-0 top-0 h-[3px]" />
+          <IconWallet className="mt-0.5 h-[17px] w-[17px] shrink-0 text-rose" />
           <div className="flex flex-col">
-            <span className="text-body font-semibold">{t("codTitle")}</span>
-            <span className="text-caption text-ink-muted">{t("codBody")}</span>
+            <span className="text-[14.5px] font-semibold">{t("codTitle")}</span>
+            <span className="mt-0.5 text-[13px] text-body">{t("codBody")}</span>
           </div>
         </div>
 
-        <label className="mt-2 flex items-start gap-3 py-2 text-body">
+        {/* A square box, not the round native control: the board draws a
+            1.5px ink square that fills with wine when checked. `appearance-none`
+            keeps the real <input> for the keyboard and the label. */}
+        <label className="mt-5 flex items-start gap-[11px] text-body">
           <input
             type="checkbox"
             checked={agreed}
             onChange={(e) => setAgreed(e.target.checked)}
-            className="mt-0.5 h-5 w-5 shrink-0 accent-[var(--color-rose)]"
+            className="checkbox-square mt-px"
           />
-          <span className="text-caption text-ink">
+          <span className="text-[13.5px] leading-[1.45] text-body">
             {t("agreePre")}
-            <Link href="/conditions" className="underline">
+            <Link href="/conditions" className="text-rose underline">
               {t("agreeLink")}
             </Link>
             {t("agreePost")}
@@ -514,7 +520,7 @@ export default function CheckoutPage() {
       </section>
 
       {/* fixed action bar */}
-      <div className="fixed inset-x-0 bottom-0 z-20 mx-auto w-full max-w-[480px] border-t border-sand-deep bg-surface/95 px-4 py-3 backdrop-blur">
+      <div className="fixed inset-x-0 bottom-0 z-20 mx-auto w-full max-w-[480px] border-t border-ink bg-paper px-5 pb-5 pt-3.5">
         <div className="flex items-center gap-3 pb-[env(safe-area-inset-bottom)]">
           <div className="flex shrink-0 flex-col">
             <span className={label}>{t("totalDue")}</span>
@@ -526,7 +532,7 @@ export default function CheckoutPage() {
             type="button"
             onClick={confirm}
             disabled={sending}
-            className="ms-auto h-11 flex-1 rounded-full bg-rose px-4 text-body font-semibold text-white hover:bg-rose-hover disabled:bg-sand-deep disabled:text-ink-faint"
+            className="ms-auto flex-1 rounded-pill bg-rose px-4 py-4 text-[15px] font-semibold text-paper shadow-md hover:bg-rose-hover disabled:bg-sand-deep disabled:text-ink-faint disabled:shadow-none"
           >
             {sending ? t("sending") : t("confirm")}
           </button>

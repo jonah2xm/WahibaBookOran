@@ -54,7 +54,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
           bar, and both add the safe-area inset themselves — so the toast has
           to add it too, or it sits under the home indicator on a phone. */}
       <div
-        className={`pointer-events-none fixed inset-x-0 z-40 mx-auto w-full max-w-[480px] px-4 ${
+        className={`pointer-events-none fixed inset-x-0 z-40 mx-auto w-full max-w-[480px] px-[22px] ${
           pathname.startsWith("/livre/")
             ? "bottom-[calc(5.75rem+env(safe-area-inset-bottom))]"
             : "bottom-[calc(5rem+env(safe-area-inset-bottom))]"
@@ -65,16 +65,33 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
         {toast ? (
           <div
             key={toast.id}
-            className="toast-in pointer-events-auto flex items-center gap-3 rounded-card bg-ink px-4 py-3 text-surface shadow-lg"
+            /* The board's toast is a deep-green pill with a gold check. The
+               action link is not in the board — it is kept because a card
+               add gives no other way back to the basket. */
+            className="toast-in pointer-events-auto flex items-center gap-2.5 rounded-pill bg-deep px-[18px] py-3 text-paper"
           >
-            <span className="min-w-0 flex-1 text-body font-medium">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              className="h-[15px] w-[15px] shrink-0 text-gold"
+              aria-hidden
+            >
+              <path
+                d="M4 12l6 6L20 6"
+                stroke="currentColor"
+                strokeWidth="2.4"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+            <span className="min-w-0 flex-1 text-[13.5px] font-medium">
               {toast.message}
             </span>
             {toast.action ? (
               <Link
                 href={toast.action.href}
                 onClick={() => setToast(null)}
-                className="shrink-0 rounded-full px-3 py-1 text-caption font-semibold text-rose-300 underline-offset-2 hover:underline"
+                className="shrink-0 whitespace-nowrap text-[13.5px] font-semibold text-gold underline-offset-2 hover:underline"
               >
                 {toast.action.label}
               </Link>

@@ -92,7 +92,7 @@ export default function NewBookPage() {
   }, [title, author, effectiveSlug, priceDa, weightGrams, t, te]);
 
   const field =
-    "h-11 w-full rounded-input border border-sand-deep bg-surface px-4 text-body outline-none placeholder:text-ink-faint focus:border-rose";
+    "field-underline";
   const label = "text-micro uppercase tracking-[0.06em] text-ink-muted";
   const bad = "border-danger";
 
@@ -235,7 +235,7 @@ export default function NewBookPage() {
                       : [...prev, c.slug],
                   )
                 }
-                className={`h-10 rounded-full border px-4 text-caption font-medium ${
+                className={`h-10 rounded-pill border px-4 text-caption font-medium ${
                   active
                     ? "border-rose bg-rose-50 text-rose"
                     : "border-sand-deep bg-surface text-ink"
@@ -332,7 +332,7 @@ export default function NewBookPage() {
             type="button"
             onClick={create}
             disabled={saving}
-            className="h-11 rounded-full bg-rose px-6 text-body font-semibold text-white hover:bg-rose-hover disabled:bg-sand-deep disabled:text-ink-faint"
+            className="h-11 rounded-pill bg-rose px-6 text-body font-semibold text-paper hover:bg-rose-hover disabled:bg-sand-deep disabled:text-ink-faint"
           >
             {saving ? tc("loading") : t("create")}
           </button>

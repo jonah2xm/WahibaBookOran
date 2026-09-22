@@ -49,7 +49,7 @@ export function LoadFailed({
       <button
         type="button"
         onClick={onRetry}
-        className="h-11 rounded-full border border-danger/40 px-5 text-caption font-semibold text-danger"
+        className="h-11 rounded-pill border border-danger/40 px-5 text-caption font-semibold text-danger"
       >
         {t("retry")}
       </button>

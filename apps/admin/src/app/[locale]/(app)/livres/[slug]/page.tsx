@@ -183,7 +183,7 @@ export default function BookEditorPage({
   }
 
   const field =
-    "h-11 w-full rounded-input border border-sand-deep bg-surface px-4 text-body outline-none placeholder:text-ink-faint focus:border-rose";
+    "field-underline";
   const label = "text-micro uppercase tracking-[0.06em] text-ink-muted";
   const isFr = tab === "fr";
 
@@ -243,7 +243,7 @@ export default function BookEditorPage({
       <section className="flex flex-col gap-3 px-4">
         <div
           role="tablist"
-          className="flex gap-1 rounded-full border border-sand-deep bg-surface p-1"
+          className="flex gap-1 rounded-pill border border-sand-deep bg-surface p-1"
         >
           {(["fr", "ar"] as const).map((k) => (
             <button
@@ -252,8 +252,8 @@ export default function BookEditorPage({
               type="button"
               aria-selected={tab === k}
               onClick={() => setTab(k)}
-              className={`h-9 flex-1 rounded-full text-caption font-semibold ${
-                tab === k ? "bg-rose text-white" : "text-ink-muted"
+              className={`h-9 flex-1 rounded-pill text-caption font-semibold ${
+                tab === k ? "bg-rose text-paper" : "text-ink-muted"
               }`}
             >
               {k === "fr" ? t("french") : t("arabic")}
@@ -318,7 +318,7 @@ export default function BookEditorPage({
                       : [...draft.categorySlugs, c.slug],
                   )
                 }
-                className={`h-10 rounded-full border px-4 text-caption font-medium ${
+                className={`h-10 rounded-pill border px-4 text-caption font-medium ${
                   active
                     ? "border-rose bg-rose-50 text-rose"
                     : "border-sand-deep bg-surface text-ink"
@@ -422,7 +422,7 @@ export default function BookEditorPage({
                 type="button"
                 onClick={remove}
                 disabled={deleting}
-                className="h-11 flex-1 rounded-full bg-danger px-4 text-caption font-semibold text-white disabled:opacity-60"
+                className="h-11 flex-1 rounded-pill bg-danger px-4 text-caption font-semibold text-paper disabled:opacity-60"
               >
                 {deleting ? tc("loading") : t("deleteYes")}
               </button>
@@ -430,7 +430,7 @@ export default function BookEditorPage({
                 type="button"
                 onClick={() => setConfirmingDelete(false)}
                 disabled={deleting}
-                className="h-11 flex-1 rounded-full border border-sand-deep bg-surface px-4 text-caption font-semibold"
+                className="h-11 flex-1 rounded-pill border border-sand-deep bg-surface px-4 text-caption font-semibold"
               >
                 {tc("cancel")}
               </button>
@@ -441,7 +441,7 @@ export default function BookEditorPage({
             <button
               type="button"
               onClick={() => setConfirmingDelete(true)}
-              className="h-11 w-fit rounded-full border border-danger/40 px-4 text-caption font-semibold text-danger"
+              className="h-11 w-fit rounded-pill border border-danger/40 px-4 text-caption font-semibold text-danger"
             >
               {t("deleteBook")}
             </button>
@@ -479,7 +479,7 @@ export default function BookEditorPage({
             type="button"
             onClick={save}
             disabled={!dirty || saving}
-            className="h-11 rounded-full bg-rose px-6 text-body font-semibold text-white hover:bg-rose-hover disabled:bg-sand-deep disabled:text-ink-faint"
+            className="h-11 rounded-pill bg-rose px-6 text-body font-semibold text-paper hover:bg-rose-hover disabled:bg-sand-deep disabled:text-ink-faint"
           >
             {saving ? tc("loading") : t("save")}
           </button>

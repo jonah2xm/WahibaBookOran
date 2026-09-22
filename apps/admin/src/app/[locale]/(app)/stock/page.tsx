@@ -78,7 +78,7 @@ export default function StockPage() {
           onChange={(e) => setQuery(e.target.value)}
           placeholder={t("searchPlaceholder")}
           aria-label={t("searchPlaceholder")}
-          className="h-11 w-full rounded-input border border-sand-deep bg-surface px-4 text-body outline-none placeholder:text-ink-faint focus:border-rose"
+          className="field-underline"
         />
 
         <div className="rail flex gap-2 overflow-x-auto">
@@ -88,9 +88,9 @@ export default function StockPage() {
               type="button"
               aria-pressed={filter === c.key}
               onClick={() => setFilter(c.key)}
-              className={`h-10 shrink-0 rounded-full border px-4 text-caption font-medium ${
+              className={`h-10 shrink-0 rounded-pill border px-4 text-caption font-medium ${
                 filter === c.key
-                  ? "border-rose bg-rose text-white"
+                  ? "border-rose bg-rose text-paper"
                   : "border-sand-deep bg-surface text-ink"
               }`}
             >
@@ -111,7 +111,7 @@ export default function StockPage() {
             <li key={b.slug}>
               <Link
                 href={`/stock/${b.slug}`}
-                className="flex items-center gap-3 rounded-card bg-surface p-3 shadow-sm"
+                className="flex items-center gap-3 border border-sand-deep p-3"
               >
                 <span
                   className={`lat grid h-12 w-12 shrink-0 place-items-center rounded-card font-display text-body-lg font-semibold ${

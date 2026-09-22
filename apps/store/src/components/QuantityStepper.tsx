@@ -18,11 +18,11 @@ export function QuantityStepper({
   const cap = max ?? Infinity;
 
   const btn =
-    "grid h-11 w-11 place-items-center text-title text-ink disabled:text-ink-faint";
+    "grid h-[34px] w-[34px] place-items-center rounded-full text-[19px] leading-none text-ink hover:bg-sand disabled:text-ink-faint disabled:hover:bg-transparent";
 
   return (
     <div
-      className="inline-flex items-center rounded-full border border-sand-deep bg-surface"
+      className="inline-flex items-center gap-1 rounded-pill border border-ink p-1"
       role="group"
       aria-label={t("quantity")}
     >
@@ -35,7 +35,7 @@ export function QuantityStepper({
       >
         −
       </button>
-      <span className="lat w-8 text-center text-body font-semibold tabular-nums">
+      <span className="lat min-w-[26px] text-center font-display text-[17px] font-semibold tabular-nums">
         {value}
       </span>
       <button

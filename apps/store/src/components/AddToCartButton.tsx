@@ -8,22 +8,24 @@ import { useCart } from "./CartProvider";
 import { useToast } from "./ToastProvider";
 
 /**
- * The round "+" on a book card.
+ * The round "+" in a book card's info block.
  *
  * It is a sibling of the card's link, not a child: a <button> inside an <a>
  * is invalid HTML, so BookCard stretches its link with a pseudo-element and
  * this button sits above it on z-20.
  *
- * `className` carries the placement, which differs per variant — over the
- * cover's corner in the grid, at the end of the row in the list — so the
- * button itself only owns its size and colours.
+ * The board draws it at 26px. That is well under the 44px target the brief
+ * requires, so the disc stays 26px and the hit area is grown around it with
+ * a transparent ::before — the drawing is the board's, the tap target is
+ * not negotiable.
  */
 export function AddToCartButton({
   book,
-  className = "absolute bottom-2 end-2",
+  outline = false,
 }: {
   book: Book;
-  className?: string;
+  /** the bestseller row's variant: hairline ring instead of a filled disc */
+  outline?: boolean;
 }) {
   const t = useTranslations("book");
   const tc = useTranslations("cart");
@@ -71,14 +73,16 @@ export function AddToCartButton({
           ? tc("maxStock", { title: isolate(pick(book.title, locale)) })
           : t("addTitleToCart", { title: isolate(pick(book.title, locale)) })
       }
-      className={`${className} z-20 grid h-11 w-11 shrink-0 place-items-center rounded-full shadow-md transition-colors ${
+      className={`tap relative z-20 grid h-[26px] w-[26px] shrink-0 place-items-center rounded-full text-[16px] leading-none transition-colors ${
         justAdded
-          ? "pop bg-success text-white"
-          : "bg-rose text-white hover:bg-rose-hover"
-      } disabled:bg-surface/90 disabled:text-ink-faint disabled:shadow-sm`}
+          ? "pop border border-success bg-success text-paper"
+          : outline
+            ? "border border-ink text-ink hover:bg-ink hover:text-paper"
+            : "border border-ink bg-ink text-paper hover:border-rose hover:bg-rose"
+      } disabled:border-sand-deep disabled:bg-transparent disabled:text-ink-faint`}
     >
       {justAdded ? (
-        <svg viewBox="0 0 24 24" fill="none" className="h-5 w-5" aria-hidden>
+        <svg viewBox="0 0 24 24" fill="none" className="h-3.5 w-3.5" aria-hidden>
           <path
             d="m5 12.5 4.5 4.5L19 7.5"
             stroke="currentColor"
@@ -88,7 +92,7 @@ export function AddToCartButton({
           />
         </svg>
       ) : (
-        <svg viewBox="0 0 24 24" fill="none" className="h-5 w-5" aria-hidden>
+        <svg viewBox="0 0 24 24" fill="none" className="h-3.5 w-3.5" aria-hidden>
           <path
             d="M12 5v14M5 12h14"
             stroke="currentColor"

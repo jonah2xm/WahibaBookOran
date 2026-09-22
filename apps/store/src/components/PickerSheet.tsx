@@ -55,21 +55,19 @@ export function PickerSheet({
         type="button"
         aria-label={t("close")}
         onClick={onClose}
-        className="absolute inset-0 bg-ink/35"
+        className="absolute inset-0 bg-[rgba(20,16,14,0.45)]"
       />
       <div
         role="dialog"
         aria-modal="true"
         aria-label={title}
-        className="relative flex max-h-[80dvh] w-full max-w-[480px] flex-col rounded-t-sheet bg-surface shadow-lg"
+        className="sheet-panel relative flex max-h-[80dvh] w-full max-w-[480px] flex-col"
       >
-        <div className="flex flex-col items-center pt-3">
-          <span className="h-1 w-10 rounded-full bg-sand-deep" />
-          <h2 className="mt-3 font-display text-title">{title}</h2>
-        </div>
+        <span className="sheet-grab" />
+        <h2 className="sheet-title">{title}</h2>
 
-        <div className="px-4 py-3">
-          <div className="flex h-11 items-center gap-2 rounded-full border border-sand-deep px-4">
+        <div className="px-[22px] py-3.5">
+          <div className="flex h-11 items-center gap-2 rounded-pill border border-sand-deep px-4">
             <IconSearch className="h-5 w-5 text-ink-faint" />
             <input
               ref={inputRef}
@@ -82,7 +80,7 @@ export function PickerSheet({
           </div>
         </div>
 
-        <ul className="flex-1 overflow-y-auto px-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
+        <ul className="flex-1 overflow-y-auto pb-[max(0.5rem,env(safe-area-inset-bottom))]">
           {filtered.map((o) => (
             <li key={o.id}>
               <button
@@ -91,7 +89,7 @@ export function PickerSheet({
                   onPick(o);
                   onClose();
                 }}
-                className="flex min-h-[52px] w-full flex-col justify-center border-b border-sand-deep/60 text-start"
+                className="sheet-row min-h-[52px] flex-col items-start justify-center"
               >
                 <span className="text-body">{o.label}</span>
                 {o.sub ? (

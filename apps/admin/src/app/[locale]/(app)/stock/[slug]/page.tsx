@@ -155,7 +155,7 @@ export default function StockDetailPage({
   }
 
   const field =
-    "h-11 w-full rounded-input border border-sand-deep bg-surface px-4 text-body outline-none placeholder:text-ink-faint focus:border-rose";
+    "field-underline";
   const label = "text-micro uppercase tracking-[0.06em] text-ink-muted";
 
   return (
@@ -184,7 +184,7 @@ export default function StockDetailPage({
           </span>
         </div>
         <span
-          className={`shrink-0 rounded-full px-3 py-1.5 text-caption font-semibold ${
+          className={`shrink-0 rounded-pill px-3 py-1.5 text-caption font-semibold ${
             state === "out"
               ? "bg-danger/12 text-danger"
               : state === "low"
@@ -202,7 +202,7 @@ export default function StockDetailPage({
 
       <Link
         href={`/livres/${slug}`}
-        className="mx-4 flex items-center justify-between rounded-card bg-surface px-4 py-3 text-body shadow-sm"
+        className="mx-4 flex items-center justify-between border border-sand-deep px-4 py-3 text-body"
       >
         {t("editBook")}
         <IconChevron className="h-4 w-4 text-ink-faint" />
@@ -215,7 +215,7 @@ export default function StockDetailPage({
         </h2>
 
         {movements.length === 0 ? (
-          <p className="rounded-card bg-surface p-4 text-caption text-ink-muted shadow-sm">
+          <p className="border border-sand-deep p-4 text-caption text-ink-muted">
             {t("noMovements")}
           </p>
         ) : (
@@ -223,7 +223,7 @@ export default function StockDetailPage({
             {movements.map((m) => (
               <li
                 key={m.id}
-                className="flex items-center gap-3 rounded-card bg-surface p-3 shadow-sm"
+                className="flex items-center gap-3 border border-sand-deep p-3"
               >
                 <span className="flex min-w-0 flex-1 flex-col">
                   <span className="line-clamp-1 text-body">{labelFor(m)}</span>
@@ -267,7 +267,7 @@ export default function StockDetailPage({
             setOpen(true);
             setError(null);
           }}
-          className="h-11 w-full rounded-full bg-rose text-body font-semibold text-white hover:bg-rose-hover"
+          className="h-11 w-full rounded-pill bg-rose text-body font-semibold text-paper hover:bg-rose-hover"
         >
           {t("adjust")}
         </button>
@@ -304,7 +304,7 @@ export default function StockDetailPage({
                     type="button"
                     aria-pressed={kind === m.kind}
                     onClick={() => setKind(m.kind)}
-                    className={`h-10 rounded-full border px-4 text-caption font-medium ${
+                    className={`h-10 rounded-pill border px-4 text-caption font-medium ${
                       kind === m.kind
                         ? "border-rose bg-rose-50 text-rose"
                         : "border-sand-deep bg-surface text-ink"
@@ -320,15 +320,15 @@ export default function StockDetailPage({
             {motif.sign === 0 ? (
               <div className="flex flex-col gap-2">
                 <span className={label}>{t("direction")}</span>
-                <div className="flex gap-1 rounded-full border border-sand-deep bg-surface p-1">
+                <div className="flex gap-1 rounded-pill border border-sand-deep bg-surface p-1">
                   {([1, -1] as const).map((s) => (
                     <button
                       key={s}
                       type="button"
                       aria-pressed={sign === s}
                       onClick={() => setSign(s)}
-                      className={`h-9 flex-1 rounded-full text-caption font-semibold ${
-                        sign === s ? "bg-rose text-white" : "text-ink-muted"
+                      className={`h-9 flex-1 rounded-pill text-caption font-semibold ${
+                        sign === s ? "bg-rose text-paper" : "text-ink-muted"
                       }`}
                     >
                       {s === 1 ? t("add") : t("remove")}
@@ -387,7 +387,7 @@ export default function StockDetailPage({
               type="button"
               onClick={submit}
               disabled={!canSubmit || saving}
-              className="h-12 w-full rounded-full bg-rose text-body font-semibold text-white hover:bg-rose-hover disabled:bg-sand-deep disabled:text-ink-faint"
+              className="h-12 w-full rounded-pill bg-rose text-body font-semibold text-paper hover:bg-rose-hover disabled:bg-sand-deep disabled:text-ink-faint"
             >
               {saving
                 ? tc("loading")

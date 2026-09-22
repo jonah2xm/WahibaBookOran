@@ -78,10 +78,10 @@ export function CategoryManager() {
   const field =
     "h-11 w-full rounded-input border border-sand-deep bg-surface px-3 text-body outline-none focus:border-rose";
   const chip =
-    "h-9 rounded-full border border-sand-deep px-3 text-caption font-semibold";
+    "h-9 rounded-pill border border-sand-deep px-3 text-caption font-semibold";
 
   return (
-    <div className="mx-4 flex flex-col gap-3 rounded-card bg-surface p-4 shadow-sm">
+    <div className="mx-4 flex flex-col gap-3 border border-sand-deep p-4">
       {items === null ? (
         <p className="text-caption text-ink-muted">{tc("loading")}</p>
       ) : (
@@ -129,7 +129,7 @@ export function CategoryManager() {
                           );
                           if (ok) setEditing(null);
                         }}
-                        className={`${chip} border-rose bg-rose text-white disabled:opacity-50`}
+                        className={`${chip} border-rose bg-rose text-paper disabled:opacity-50`}
                       >
                         {t("save")}
                       </button>
@@ -186,7 +186,7 @@ export function CategoryManager() {
                           );
                           if (ok) setConfirming(null);
                         }}
-                        className={`${chip} border-danger bg-danger text-white`}
+                        className={`${chip} border-danger bg-danger text-paper`}
                       >
                         {t("deleteYes")}
                       </button>
@@ -258,7 +258,7 @@ export function CategoryManager() {
                   setAdding(false);
                 }
               }}
-              className={`${chip} border-rose bg-rose text-white disabled:opacity-50`}
+              className={`${chip} border-rose bg-rose text-paper disabled:opacity-50`}
             >
               {t("create")}
             </button>
@@ -278,7 +278,7 @@ export function CategoryManager() {
         <button
           type="button"
           onClick={() => setAdding(true)}
-          className="h-11 w-fit rounded-full border border-sand-deep px-4 text-caption font-semibold"
+          className="h-11 w-fit rounded-pill border border-sand-deep px-4 text-caption font-semibold"
         >
           {t("add")}
         </button>

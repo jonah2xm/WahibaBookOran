@@ -32,29 +32,36 @@ export default async function ConditionsPage({
   const tn = await getTranslations("nav");
 
   return (
-    <main className="flex flex-col pb-10">
-      <header className="flex items-center gap-1 px-2 py-2">
+    <main className="flex flex-col pb-[26px]">
+      <header className="flex items-center gap-3.5 border-b border-ink px-[22px] pb-3.5 pt-5">
         <Link
           href="/"
           aria-label={tn("back")}
-          className="grid h-11 w-11 place-items-center text-ink"
+          className="grid h-[34px] w-[34px] shrink-0 place-items-center rounded-full border border-ink text-ink hover:bg-sand"
         >
           <span className="rotate-180 rtl:rotate-0">
-            <IconChevron className="h-5 w-5" />
+            <IconChevron className="h-[15px] w-[15px]" />
           </span>
         </Link>
-        <h1 className="font-display text-title">{t("title")}</h1>
+        <h1 className="font-display text-[26px] font-semibold tracking-[-0.02em]">
+          {t("title")}
+        </h1>
       </header>
 
-      {/* table of contents — the board's "Sommaire" */}
-      <nav className="mx-4 rounded-card bg-sand p-4">
-        <h2 className="text-micro uppercase tracking-[0.06em] text-ink-muted">
+      {/* table of contents — the board's "Sommaire", capped by the tricolour
+          rule it gives every sand block */}
+      <nav className="relative mx-[22px] mt-5 overflow-hidden bg-sand px-5 py-[18px]">
+        <span className="rule-tricolour absolute inset-x-0 top-0 h-[3px]" />
+        <h2 className="mb-3 text-[9.5px] uppercase tracking-[0.2em] text-ink-muted">
           {t("toc")}
         </h2>
-        <ol className="mt-2 flex flex-col gap-1.5">
+        <ol className="flex flex-col">
           {agreementSections.map((s, n) => (
             <li key={s.key}>
-              <a href={`#${s.key}`} className="text-body text-ink underline">
+              <a
+                href={`#${s.key}`}
+                className="block py-[5px] text-body text-rose hover:text-rose-deep"
+              >
                 {n + 1}. {pick(s.title, locale)}
               </a>
             </li>
@@ -62,17 +69,25 @@ export default async function ConditionsPage({
         </ol>
       </nav>
 
-      <div className="mt-6 flex flex-col gap-7 px-4">
+      <div className="flex flex-col px-[22px] pt-6">
         {agreementSections.map((s, n) => (
-          <section key={s.key} id={s.key} className="scroll-mt-4">
+          <section key={s.key} id={s.key} className="scroll-mt-4 pb-[22px]">
             {/* numbered from the array, never from the title: the admin can
                 reorder sections and a number typed into the text would lie */}
-            <h2 className="font-display text-body-lg font-semibold">
+            <h2 className="mb-2.5 border-b border-ink pb-1.5 font-display text-[20px] tracking-[-0.01em]">
               {n + 1}. {pick(s.title, locale)}
             </h2>
-            <ul className="mt-2 flex list-disc flex-col gap-2 ps-5 text-body text-ink-muted marker:text-rose-300">
+            <ul className="flex flex-col">
               {s.points.map((p, i) => (
-                <li key={i}>{pick(p, locale)}</li>
+                /* A gold dot, not a list marker: the board sets the bullet
+                   as its own 4px mark so it lines up with the text's cap
+                   height rather than the font's baseline. */
+                <li key={i} className="flex gap-2.5 py-[7px]">
+                  <span className="mt-[9px] h-1 w-1 shrink-0 rounded-full bg-gold" />
+                  <span className="text-[14.5px] leading-[1.5] text-body text-pretty">
+                    {pick(p, locale)}
+                  </span>
+                </li>
               ))}
             </ul>
           </section>

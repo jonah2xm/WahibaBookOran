@@ -116,7 +116,7 @@ export function CoverUpload({
         type="button"
         disabled={busy}
         onClick={() => input.current?.click()}
-        className="h-11 w-fit rounded-full border border-sand-deep bg-surface px-4 text-caption font-semibold disabled:text-ink-faint"
+        className="h-11 w-fit rounded-pill border border-sand-deep bg-surface px-4 text-caption font-semibold disabled:text-ink-faint"
       >
         {busy ? t("coverUploading") : t("replace")}
       </button>

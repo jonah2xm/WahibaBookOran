@@ -130,9 +130,9 @@ export default function SettingsPage() {
       ?.label ?? "";
 
   const field =
-    "h-11 w-full rounded-input border border-sand-deep bg-surface px-4 text-body outline-none placeholder:text-ink-faint focus:border-rose";
+    "field-underline";
   const label = "text-micro uppercase tracking-[0.06em] text-ink-muted";
-  const card = "mx-4 flex flex-col gap-3 rounded-card bg-surface p-4 shadow-sm";
+  const card = "mx-4 flex flex-col gap-3 border border-sand-deep p-4";
 
   return (
     <main className="flex flex-col gap-5 pb-32">
@@ -297,7 +297,7 @@ export default function SettingsPage() {
         </h2>
         <Link
           href="/conditions"
-          className="mx-4 flex items-center justify-between rounded-card bg-surface px-4 py-3.5 text-body shadow-sm"
+          className="mx-4 flex items-center justify-between border border-sand-deep px-4 py-3.5 text-body shadow-sm"
         >
           {t("agreement")}
           <IconChevron className="h-4 w-4 text-ink-faint" />
@@ -313,7 +313,7 @@ export default function SettingsPage() {
           <ul className="flex flex-col gap-3">
             {users.map((u) => (
               <li key={u.id} className="flex items-center gap-3">
-                <span className="lat grid h-10 w-10 shrink-0 place-items-center rounded-full bg-rose-50 text-caption font-semibold text-rose">
+                <span className="lat grid h-10 w-10 shrink-0 place-items-center rounded-pill bg-rose-50 text-caption font-semibold text-rose">
                   {u.name
                     .split(" ")
                     .map((p) => p[0])
@@ -329,7 +329,7 @@ export default function SettingsPage() {
                 </span>
                 <span className="ms-auto flex shrink-0 items-center gap-2">
                   {!u.isActive ? (
-                    <span className="rounded-full bg-ink/8 px-2.5 py-1 text-micro uppercase tracking-[0.06em] text-ink-muted">
+                    <span className="rounded-pill bg-ink/8 px-2.5 py-1 text-micro uppercase tracking-[0.06em] text-ink-muted">
                       {t("inactive")}
                     </span>
                   ) : null}
@@ -350,7 +350,7 @@ export default function SettingsPage() {
               setNote(t("inviteStub"));
               window.setTimeout(() => setNote(null), 5000);
             }}
-            className="h-11 w-fit rounded-full border border-sand-deep px-4 text-caption font-semibold"
+            className="h-11 w-fit rounded-pill border border-sand-deep px-4 text-caption font-semibold"
           >
             {t("invite")}
           </button>
@@ -380,7 +380,7 @@ export default function SettingsPage() {
       <button
         type="button"
         onClick={() => signOut({ callbackUrl: `/${locale}/connexion` })}
-        className="mx-4 h-12 rounded-full border border-danger/40 text-body font-semibold text-danger"
+        className="mx-4 h-12 rounded-pill border border-danger/40 text-body font-semibold text-danger"
       >
         {ta("signOut")}
       </button>
@@ -410,7 +410,7 @@ export default function SettingsPage() {
             type="button"
             onClick={save}
             disabled={!dirty || saving}
-            className="h-11 rounded-full bg-rose px-6 text-body font-semibold text-white hover:bg-rose-hover disabled:bg-sand-deep disabled:text-ink-faint"
+            className="h-11 rounded-pill bg-rose px-6 text-body font-semibold text-paper hover:bg-rose-hover disabled:bg-sand-deep disabled:text-ink-faint"
           >
             {saving ? tc("loading") : t("save")}
           </button>

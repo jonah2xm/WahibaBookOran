@@ -6,8 +6,14 @@ import { usePathname, useRouter } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
 import { useTransition } from "react";
 
-/** Board §S1 top bar — "FR | ع", the active one in ink, the other muted. */
-export function LocaleToggle() {
+/**
+ * Board §S1 top bar — "FR | ع", the active one solid, the other muted.
+ *
+ * `onDark` exists because the board moved the masthead inside the deep-green
+ * hero: the ink palette is unreadable there, so the same control needs a
+ * light set of values.
+ */
+export function LocaleToggle({ onDark = false }: { onDark?: boolean }) {
   const locale = useLocale();
   const router = useRouter();
   const pathname = usePathname();
@@ -24,7 +30,9 @@ export function LocaleToggle() {
     >
       {routing.locales.map((l, i) => (
         <span key={l} className="flex items-center gap-1">
-          {i > 0 ? <span className="text-ink-faint">|</span> : null}
+          {i > 0 ? (
+            <span className={onDark ? "text-paper/30" : "text-ink-faint"}>|</span>
+          ) : null}
           <button
             type="button"
             disabled={isPending}
@@ -38,7 +46,13 @@ export function LocaleToggle() {
               })
             }
             className={`grid h-11 min-w-[32px] place-items-center ${
-              l === locale ? "font-semibold text-ink" : "text-ink-faint"
+              l === locale
+                ? onDark
+                  ? "font-semibold text-paper"
+                  : "font-semibold text-ink"
+                : onDark
+                  ? "text-paper/55"
+                  : "text-ink-faint"
             }`}
             aria-pressed={l === locale}
           >

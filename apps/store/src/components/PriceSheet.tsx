@@ -52,7 +52,7 @@ export function PriceSheet({
         type="button"
         aria-label={t("close")}
         onClick={onClose}
-        className="absolute inset-0 bg-ink/35"
+        className="absolute inset-0 bg-[rgba(20,16,14,0.45)]"
       />
       <div
         ref={panelRef}
@@ -60,15 +60,13 @@ export function PriceSheet({
         role="dialog"
         aria-modal="true"
         aria-label={tb("priceAny")}
-        className="relative w-full max-w-[480px] rounded-t-sheet bg-surface shadow-lg"
+        className="sheet-panel relative w-full max-w-[480px]"
       >
-        <div className="flex flex-col items-center pt-3">
-          <span className="h-1 w-10 rounded-full bg-sand-deep" />
-          <h2 className="mt-3 font-display text-title">{tb("priceAny")}</h2>
-        </div>
+        <span className="sheet-grab" />
+        <h2 className="sheet-title">{tb("priceAny")}</h2>
 
-        <div className="flex flex-col gap-2 px-4 py-5">
-          <span className="lat text-body-lg font-semibold">
+        <div className="flex flex-col gap-2 px-[22px] pb-5 pt-5">
+          <span className="lat font-display text-[26px] tracking-[-0.015em]">
             {formatDzd(min)} – {formatDzd(max)}
           </span>
           <label className="flex items-center gap-3 text-caption text-ink-muted">
@@ -107,18 +105,18 @@ export function PriceSheet({
           </label>
         </div>
 
-        <div className="flex items-center gap-3 border-t border-sand-deep p-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
+        <div className="mt-5 flex items-center gap-2.5 border-t border-sand-deep px-[22px] pt-[26px] pb-[max(0.25rem,env(safe-area-inset-bottom))]">
           <button
             type="button"
             onClick={() => onChange({ ...value, min: null, max: null })}
-            className="h-11 rounded-full border border-sand-deep px-5 text-body font-semibold text-ink"
+            className="rounded-pill border border-ink px-[22px] py-3.5 text-body font-semibold text-ink"
           >
             {t("reset")}
           </button>
           <button
             type="button"
             onClick={onClose}
-            className="h-11 flex-1 rounded-full bg-rose px-5 text-body font-semibold text-white hover:bg-rose-hover"
+            className="flex-1 rounded-pill bg-rose py-3.5 text-body font-semibold text-paper hover:bg-rose-hover"
           >
             {t("apply", { count: resultCount })}
           </button>

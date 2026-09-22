@@ -90,37 +90,44 @@ export default async function BookPage({
   return (
     // pb clears the fixed action bar
     <main className="flex flex-col pb-24">
-      <header className="flex h-14 items-center justify-between px-2">
-        <Link
-          href="/"
-          aria-label="Retour"
-          className="grid h-11 w-11 place-items-center text-ink"
-        >
-          <span className="rotate-180 rtl:rotate-0">
-            <IconChevron className="h-5 w-5" />
-          </span>
-        </Link>
-        <LocaleToggle />
+      <header className="relative overflow-hidden bg-deep pb-[34px]">
+        <div className="ornament-plain pointer-events-none absolute inset-0 opacity-10" />
+        <div className="relative flex items-center justify-between px-[22px] pt-5">
+          <Link
+            href="/"
+            aria-label="Retour"
+            className="grid h-11 w-11 place-items-center rounded-full border border-paper/30 text-paper"
+          >
+            <span className="rotate-180 rtl:rotate-0">
+              <IconChevron className="h-4 w-4" />
+            </span>
+          </Link>
+          <LocaleToggle onDark />
+        </div>
+        {/* The book floats on the green rather than sitting in a band: the
+            board lifts it with a deeper shadow than any shelf copy. */}
+        <div className="relative flex justify-center pt-6">
+          <div className="w-[168px] [&_.book]:shadow-[0_30px_46px_-16px_rgba(10,20,17,0.75)]">
+            <Cover book={book} locale={locale} />
+          </div>
+        </div>
       </header>
 
-      {/* cover on a sand band */}
-      <div className="flex justify-center bg-sand px-4 py-6">
-        <div className="w-[176px] shadow-md">
-          <Cover book={book} locale={locale} />
-        </div>
-      </div>
-
-      <div className="flex flex-col gap-2 px-4 pt-5">
-        <h1 className="font-display text-display leading-tight">
+      <div className="flex flex-col px-[22px] pt-6">
+        {book.publisher ? (
+          <p className="mb-2 text-[10px] uppercase tracking-[0.2em] text-[#a98f6b]">
+            {book.publisher}
+          </p>
+        ) : null}
+        <h1 className="font-display text-[33px] font-semibold leading-[1.04] tracking-[-0.022em] text-pretty">
           {pick(book.title, locale)}
         </h1>
-        <p className="text-body text-ink-muted">
+        <p className="mt-1.5 text-[14.5px] text-ink-muted">
           {pick(book.author, locale)}
-          {book.publisher ? ` · ${book.publisher}` : null}
         </p>
 
-        <div className="mt-1 flex items-center gap-3">
-          <span className="lat font-display text-display">
+        <div className="mt-4 flex flex-wrap items-baseline gap-3.5 border-b-2 border-ink pb-4">
+          <span className="lat font-display text-[30px] font-bold tracking-[-0.02em]">
             {formatDzd(book.priceDzd)}
           </span>
           {book.compareAtPriceDzd && discount !== null ? (
@@ -128,15 +135,13 @@ export default async function BookPage({
               <span className="lat text-body text-ink-faint line-through">
                 {formatDzd(book.compareAtPriceDzd)}
               </span>
-              <span className="rounded-full bg-rose-50 px-2.5 py-1 text-micro font-semibold text-rose">
+              <span className="rounded-pill bg-rose-50 px-2.5 py-1 text-micro font-semibold text-rose">
                 {t("discount", { percent: discount })}
               </span>
             </>
           ) : null}
-        </div>
-
         <p
-          className={`mt-1 text-caption ${
+          className={`text-caption font-medium ${
             state.kind === "out"
               ? "text-ink-muted"
               : state.kind === "low"
@@ -150,27 +155,23 @@ export default async function BookPage({
               ? t("lowStock", { count: state.count })
               : t("inStockShipped")}
         </p>
+        </div>
       </div>
 
       <BookActions book={book} />
 
       {/* collapsible summary */}
       {book.summary ? (
-        <details className="group mx-4 border-t border-sand-deep py-4" open>
-          <summary className="flex cursor-pointer list-none items-center justify-between text-body font-semibold">
-            {t("summary")}
-            <span className="rotate-90 text-ink-muted transition-transform group-open:-rotate-90">
-              <IconChevron />
-            </span>
-          </summary>
-          <p className="pt-2 text-body text-ink-muted">
+        <section className="mx-[22px] border-b border-sand-deep pb-4 pt-[18px]">
+          <h2 className="mb-2 font-display text-[20px]">{t("summary")}</h2>
+          <p className="text-[14.5px] leading-[1.55] text-body text-pretty">
             {pick(book.summary, locale)}
           </p>
-        </details>
+        </section>
       ) : null}
 
       {/* spec table */}
-      <dl className="mx-4 border-t border-sand-deep py-2">
+      <dl className="mx-[22px]">
         {[
           [t("specs.publisher"), book.publisher],
           [t("specs.pages"), book.pageCount ? String(book.pageCount) : null],
@@ -185,22 +186,25 @@ export default async function BookPage({
           .map(([label, value]) => (
             <div
               key={label}
-              className="flex items-baseline justify-between border-b border-sand-deep/60 py-2.5 last:border-0"
+              className="flex items-center justify-between gap-3 border-b border-sand-deep py-[13px]"
             >
-              <dt className="text-caption text-ink-muted">{label}</dt>
-              <dd className="lat text-caption text-ink">{value}</dd>
+              <dt className="text-[10px] uppercase tracking-[0.16em] text-ink-muted">
+                {label}
+              </dt>
+              <dd className="lat text-body font-medium text-ink">{value}</dd>
             </div>
           ))}
       </dl>
 
       {/* delivery estimate */}
-      <section className="mx-4 mb-6 flex gap-3 rounded-card bg-sand p-4">
-        <IconTruck className="h-5 w-5 shrink-0 text-rose" />
+      <section className="relative mx-[22px] mb-[26px] mt-[22px] overflow-hidden bg-sand p-[18px]">
+        <span className="rule-tricolour absolute inset-x-0 top-0 h-[3px]" />
         <div className="flex flex-col gap-1">
-          <span className="text-body font-semibold">
+          <span className="mb-1 flex items-center gap-2.5 font-display text-[17px]">
+            <IconTruck className="h-4 w-4 shrink-0 text-rose" />
             {t("delivery.title", { city: tb("city") })}
           </span>
-          <span className="text-caption text-ink-muted">
+          <span className="text-[13.5px] text-body">
             {t("delivery.rates", {
               home: formatDzd(ESTIMATED_DELIVERY_DZD.home),
               desk: formatDzd(ESTIMATED_DELIVERY_DZD.desk),
@@ -214,10 +218,12 @@ export default async function BookPage({
 
       {others.length > 0 ? (
         <section className="mb-8">
-          <h2 className="px-4 font-display text-title">{t("sameAuthor")}</h2>
-          <div className="rail mt-3 flex gap-3 overflow-x-auto px-4 pb-1">
+          <div className="mx-[22px] border-b-2 border-ink pb-1.5">
+            <h2 className="font-display text-display">{t("sameAuthor")}</h2>
+          </div>
+          <div className="rail mt-5 flex gap-4 overflow-x-auto px-[22px] pb-2">
             {others.map((b) => (
-              <BookCard key={b.slug} book={b} width={124} addable />
+              <BookCard key={b.slug} book={b} width={140} addable />
             ))}
           </div>
         </section>

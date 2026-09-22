@@ -56,9 +56,9 @@ export default function SalesPage() {
               type="button"
               aria-pressed={tab === s}
               onClick={() => setTab(s)}
-              className={`flex h-10 shrink-0 items-center gap-1.5 rounded-full border px-4 text-caption font-medium ${
+              className={`flex h-10 shrink-0 items-center gap-1.5 rounded-pill border px-4 text-caption font-medium ${
                 tab === s
-                  ? "border-rose bg-rose text-white"
+                  ? "border-rose bg-rose text-paper"
                   : "border-sand-deep bg-surface text-ink"
               }`}
             >
@@ -86,7 +86,7 @@ export default function SalesPage() {
           return (
             <li
               key={o.orderNumber}
-              className="flex flex-col gap-2 rounded-card bg-surface p-3 shadow-sm"
+              className="flex flex-col gap-2 border border-sand-deep p-3"
             >
               <div className="flex items-center justify-between">
                 <Link
@@ -96,7 +96,7 @@ export default function SalesPage() {
                   {o.orderNumber}
                 </Link>
                 <span
-                  className={`rounded-full px-2.5 py-1 text-micro uppercase tracking-[0.06em] ${
+                  className={`rounded-pill px-2.5 py-1 text-micro uppercase tracking-[0.06em] ${
                     STATUS_TONE[o.status as OrderStatus]
                   }`}
                 >
@@ -124,7 +124,7 @@ export default function SalesPage() {
                 <a
                   href={`tel:${o.customer.phone.replace(/\s/g, "")}`}
                   aria-label={t("call", { name: o.customer.fullName })}
-                  className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-rose-50 text-rose"
+                  className="grid h-11 w-11 shrink-0 place-items-center rounded-pill bg-rose-50 text-rose"
                 >
                   <IconPhoneCall className="h-5 w-5" />
                 </a>

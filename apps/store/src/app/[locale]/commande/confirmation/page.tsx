@@ -43,7 +43,7 @@ export default function ConfirmationPage() {
         <p className="text-body text-ink-muted">{t("noOrder")}</p>
         <Link
           href="/"
-          className="grid h-11 place-items-center rounded-full bg-rose px-6 text-body font-semibold text-white"
+          className="grid h-11 place-items-center rounded-full bg-rose px-6 text-body font-semibold text-paper"
         >
           {t("keepShopping")}
         </Link>
@@ -143,7 +143,7 @@ export default function ConfirmationPage() {
       <div className="flex flex-col gap-2">
         <Link
           href="/suivi"
-          className="grid h-11 place-items-center rounded-full bg-rose text-body font-semibold text-white"
+          className="grid h-11 place-items-center rounded-full bg-rose text-body font-semibold text-paper"
         >
           {t("track")}
         </Link>

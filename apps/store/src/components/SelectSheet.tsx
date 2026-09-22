@@ -93,25 +93,23 @@ export function SelectSheet<T extends string>({
         type="button"
         aria-label={t("close")}
         onClick={onClose}
-        className="absolute inset-0 bg-ink/35"
+        className="absolute inset-0 bg-[rgba(20,16,14,0.45)]"
       />
       <div
         role="dialog"
         aria-modal="true"
         aria-label={title}
-        className="relative flex max-h-[80dvh] w-full max-w-[480px] flex-col rounded-t-sheet bg-surface shadow-lg"
+        className="sheet-panel relative flex max-h-[80dvh] w-full max-w-[480px] flex-col"
       >
-        <div className="flex flex-col items-center pt-3">
-          <span className="h-1 w-10 rounded-full bg-sand-deep" />
-          <h2 className="mt-3 font-display text-title">{title}</h2>
-        </div>
+        <span className="sheet-grab" />
+        <h2 className="sheet-title">{title}</h2>
 
         <ul
           ref={listRef}
           role="listbox"
           aria-label={title}
           onKeyDown={onArrowKeys}
-          className="mt-2 flex-1 overflow-y-auto px-4 pb-[max(1rem,env(safe-area-inset-bottom))]"
+          className="flex-1 overflow-y-auto pb-[max(0.5rem,env(safe-area-inset-bottom))]"
         >
           {options.map((o) => {
             const current = o.value === value;
@@ -125,7 +123,7 @@ export function SelectSheet<T extends string>({
                     onPick(o.value);
                     onClose();
                   }}
-                  className={`flex min-h-[52px] w-full items-center justify-between gap-3 border-b border-sand-deep/60 text-start text-body ${
+                  className={`sheet-row min-h-[52px] ${
                     current ? "font-semibold text-rose" : "text-ink"
                   }`}
                 >
@@ -134,13 +132,13 @@ export function SelectSheet<T extends string>({
                     <svg
                       viewBox="0 0 24 24"
                       fill="none"
-                      className="h-5 w-5 shrink-0"
+                      className="h-4 w-4 shrink-0"
                       aria-hidden
                     >
                       <path
-                        d="m5 12.5 4.5 4.5L19 7.5"
+                        d="M4 12l6 6L20 6"
                         stroke="currentColor"
-                        strokeWidth="2.2"
+                        strokeWidth="2.4"
                         strokeLinecap="round"
                         strokeLinejoin="round"
                       />

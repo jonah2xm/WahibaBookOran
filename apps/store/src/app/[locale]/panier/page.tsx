@@ -5,7 +5,7 @@ import { Link } from "@/i18n/navigation";
 import { useCart } from "@/components/CartProvider";
 import { Cover } from "@/components/Cover";
 import { QuantityStepper } from "@/components/QuantityStepper";
-import { IconBag, IconChevron, IconInfo, IconTrash } from "@/components/icons";
+import { IconBag, IconChevron, IconTrash } from "@/components/icons";
 import { pick, stockState } from "@/lib/types";
 import { formatDzd } from "@/lib/format";
 
@@ -27,24 +27,30 @@ export default function CartPage() {
   } = useCart();
 
   const missing = freeShippingThresholdDzd - subtotal;
+  const freeShipPct =
+    freeShippingThresholdDzd > 0
+      ? Math.min(100, (subtotal / freeShippingThresholdDzd) * 100)
+      : 100;
 
   const header = (
-    <header className="flex h-14 items-center gap-1 px-2">
+    <header className="flex items-center gap-3.5 border-b border-ink px-[22px] pb-3.5 pt-5">
       <Link
         href="/"
         aria-label={tn("back")}
-        className="grid h-11 w-11 place-items-center text-ink"
+        className="grid h-[34px] w-[34px] shrink-0 place-items-center rounded-full border border-ink text-ink hover:bg-sand"
       >
         <span className="rotate-180 rtl:rotate-0">
-          <IconChevron className="h-5 w-5" />
+          <IconChevron className="h-[15px] w-[15px]" />
         </span>
       </Link>
-      <h1 className="font-display text-title">
+      <h1 className="font-display text-[27px] font-semibold tracking-[-0.02em]">
         {t("title")}
-        {count > 0 ? (
-          <span className="lat ms-2 text-body text-ink-muted">· {count}</span>
-        ) : null}
       </h1>
+      {count > 0 ? (
+        <span className="lat text-[11px] uppercase tracking-[0.16em] text-ink-muted">
+          · {count}
+        </span>
+      ) : null}
     </header>
   );
 
@@ -54,10 +60,10 @@ export default function CartPage() {
     return (
       <main className="flex flex-col">
         {header}
-        <div className="flex flex-col gap-3 px-4">
+        <div className="flex flex-col px-[22px]">
           {[0, 1].map((i) => (
-            <div key={i} className="flex gap-3 rounded-card bg-surface p-3">
-              <div className="shimmer h-[96px] w-[64px] rounded-cover" />
+            <div key={i} className="flex gap-4 border-b border-sand-deep py-[18px]">
+              <div className="shimmer h-[84px] w-14 rounded-cover" />
               <div className="flex flex-1 flex-col gap-2 pt-1">
                 <div className="h-3 w-3/4 rounded-full bg-sand" />
                 <div className="h-3 w-1/3 rounded-full bg-sand" />
@@ -80,13 +86,13 @@ export default function CartPage() {
           <p className="text-body text-ink-muted">{t("empty.body")}</p>
           <Link
             href="/"
-            className="mt-2 grid h-11 w-full place-items-center rounded-full bg-rose px-5 text-body font-semibold text-white"
+            className="mt-2 grid w-full place-items-center rounded-pill bg-rose px-5 py-4 text-[15px] font-semibold text-paper shadow-md"
           >
             {t("empty.primary")}
           </Link>
           <Link
             href="/livres"
-            className="grid h-11 w-full place-items-center rounded-full border border-sand-deep bg-surface px-5 text-body font-semibold text-ink"
+            className="grid w-full place-items-center rounded-pill border border-ink px-5 py-4 text-[15px] font-semibold text-ink"
           >
             {t("empty.secondary")}
           </Link>
@@ -99,29 +105,28 @@ export default function CartPage() {
     <main className="flex flex-col pb-28">
       {header}
 
-      <ul className="flex flex-col gap-3 px-4">
+      <ul className="flex flex-col px-[22px]">
         {lines.map((line) => {
           const out = stockState(line.book).kind === "out";
           const title = pick(line.book.title, locale);
           return (
             <li
               key={line.slug}
-              className={`flex flex-col gap-3 rounded-card bg-surface p-3 shadow-sm ${
-                out ? "border border-danger/30" : ""
-              }`}
+              className="flex flex-col gap-2 border-b border-sand-deep py-[18px]"
             >
-              <div className="flex gap-3">
-                <Link href={`/livre/${line.slug}`} className="w-[64px] shrink-0">
+              <div className="flex gap-[15px]">
+                <Link href={`/livre/${line.slug}`} className="w-14 shrink-0">
                   <Cover
                     book={line.book}
                     locale={locale}
+                    small
                     className={out ? "opacity-55" : ""}
                   />
                 </Link>
-                <div className="flex min-w-0 flex-1 flex-col gap-1">
+                <div className="flex min-w-0 flex-1 flex-col gap-2">
                   <Link
                     href={`/livre/${line.slug}`}
-                    className="font-display line-clamp-2 text-body font-semibold"
+                    className="font-display line-clamp-2 text-[18px] leading-[1.1] tracking-[-0.012em]"
                   >
                     {title}
                   </Link>
@@ -130,17 +135,17 @@ export default function CartPage() {
                       {tb("outOfStock")}
                     </span>
                   ) : (
-                    <span className="lat text-body font-semibold">
+                    <span className="lat text-[13px] font-semibold">
                       {formatDzd(line.book.priceDzd)}
                     </span>
                   )}
 
-                  <div className="mt-1 flex items-center justify-between">
+                  <div className="flex items-center justify-between">
                     {out ? (
                       <button
                         type="button"
                         onClick={() => remove(line.slug)}
-                        className="h-11 rounded-full border border-danger/40 px-4 text-caption font-semibold text-danger"
+                        className="rounded-pill border border-danger px-4 py-2.5 text-caption font-semibold text-danger"
                       >
                         {t("remove")}
                       </button>
@@ -156,9 +161,9 @@ export default function CartPage() {
                         type="button"
                         onClick={() => remove(line.slug)}
                         aria-label={t("removeItem", { title })}
-                        className="grid h-11 w-11 place-items-center text-ink-faint"
+                        className="grid h-11 w-11 place-items-center text-ink-muted hover:opacity-60"
                       >
-                        <IconTrash className="h-5 w-5" />
+                        <IconTrash className="h-4 w-4" />
                       </button>
                     ) : null}
                   </div>
@@ -176,37 +181,55 @@ export default function CartPage() {
       </ul>
 
       {/* summary */}
-      <section className="mx-4 mt-5 flex flex-col gap-2 rounded-card bg-surface p-4 shadow-sm">
-        <div className="flex items-baseline justify-between">
-          <span className="text-body text-ink-muted">{t("subtotal")}</span>
-          <span className="lat text-body-lg font-semibold">
+      <section className="flex flex-col px-[22px] pt-[22px]">
+        <div className="flex items-baseline justify-between pb-3">
+          <span className="text-[15px]">{t("subtotal")}</span>
+          <span className="lat font-display text-[20px] font-semibold">
             {formatDzd(subtotal)}
           </span>
         </div>
-        <div className="flex items-baseline justify-between">
-          <span className="text-body text-ink-muted">{t("delivery")}</span>
-          <span className="text-caption text-ink-faint">
+        <div className="flex items-baseline justify-between border-b border-sand-deep pb-[18px]">
+          <span className="text-[15px]">{t("delivery")}</span>
+          <span className="text-[13px] text-ink-muted">
             {t("deliveryNextStep")}
           </span>
         </div>
-        <div className="mt-1 flex items-start gap-2 rounded-input bg-rose-50 p-3">
-          <IconInfo className="h-4 w-4 shrink-0 text-rose" />
-          <span className="text-caption text-ink">
+
+        <div className="relative mt-5 overflow-hidden bg-sand px-[18px] py-4">
+          <span className="rule-tricolour absolute inset-x-0 top-0 h-[3px]" />
+          <p className="text-[13.5px] text-ink">
             {missing > 0
-              ? t("freeShipHint", { amount: formatDzd(missing) })
+              ? t.rich("freeShipHint", {
+                  amount: formatDzd(missing),
+                  strong: (c) => <strong className="lat">{c}</strong>,
+                })
               : t("freeShipReached")}
-          </span>
+          </p>
+          {/* The board turns the threshold into a distance you can see.
+              Capped at 100 so an order past the threshold reads as done. */}
+          <div
+            className="mt-3 h-1 overflow-hidden bg-[rgba(26,21,18,0.12)]"
+            role="progressbar"
+            aria-valuemin={0}
+            aria-valuemax={100}
+            aria-valuenow={Math.round(freeShipPct)}
+          >
+            <div
+              className="h-full bg-rose transition-[width] duration-400"
+              style={{ width: `${freeShipPct}%` }}
+            />
+          </div>
         </div>
       </section>
 
       {/* fixed action bar — mirrors S4 */}
-      <div className="fixed inset-x-0 bottom-0 z-20 mx-auto w-full max-w-[480px] border-t border-sand-deep bg-surface/95 px-4 py-3 backdrop-blur">
-        <div className="flex items-center gap-3 pb-[env(safe-area-inset-bottom)]">
-          <div className="flex flex-col">
-            <span className="text-micro uppercase tracking-[0.06em] text-ink-muted">
+      <div className="fixed inset-x-0 bottom-0 z-20 mx-auto w-full max-w-[480px] border-t border-ink bg-paper px-5 pb-5 pt-3.5">
+        <div className="flex items-center gap-3.5 pb-[env(safe-area-inset-bottom)]">
+          <div className="flex shrink-0 flex-col">
+            <span className="text-[9px] uppercase tracking-[0.2em] text-ink-muted">
               {t("subtotal")}
             </span>
-            <span className="lat font-display text-title">
+            <span className="lat mt-px font-display text-[22px] font-semibold tracking-[-0.01em]">
               {formatDzd(subtotal)}
             </span>
           </div>
@@ -214,10 +237,10 @@ export default function CartPage() {
             href="/commande"
             aria-disabled={hasBlockingLine}
             onClick={(e) => hasBlockingLine && e.preventDefault()}
-            className={`ms-auto grid h-11 flex-1 place-items-center rounded-full px-5 text-body font-semibold ${
+            className={`ms-auto grid flex-1 place-items-center rounded-pill px-5 py-4 text-[15px] font-semibold ${
               hasBlockingLine
                 ? "pointer-events-none bg-sand-deep text-ink-faint"
-                : "bg-rose text-white hover:bg-rose-hover"
+                : "bg-rose text-paper shadow-md hover:bg-rose-hover"
             }`}
           >
             {t("checkout")}

@@ -135,14 +135,14 @@ export default function OrderDetailPage({
         </Link>
         <h1 className="lat font-display text-title">{order.orderNumber}</h1>
         <span
-          className={`ms-auto me-2 rounded-full px-2.5 py-1 text-micro uppercase tracking-[0.06em] ${STATUS_TONE[status]}`}
+          className={`ms-auto me-2 rounded-pill px-2.5 py-1 text-micro uppercase tracking-[0.06em] ${STATUS_TONE[status]}`}
         >
           {ts(status)}
         </span>
       </header>
 
       {/* customer */}
-      <section className="mx-4 flex items-center gap-3 rounded-card bg-surface p-4 shadow-sm">
+      <section className="mx-4 flex items-center gap-3 border border-sand-deep p-4">
         <div className="flex min-w-0 flex-1 flex-col">
           <span className="text-body font-semibold">
             {order.customer.fullName}
@@ -160,7 +160,7 @@ export default function OrderDetailPage({
         <a
           href={`tel:${order.customer.phone.replace(/\s/g, "")}`}
           aria-label={t("call", { name: order.customer.fullName })}
-          className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-rose-50 text-rose"
+          className="grid h-11 w-11 shrink-0 place-items-center rounded-pill bg-rose-50 text-rose"
         >
           <IconPhoneCall className="h-5 w-5" />
         </a>
@@ -170,14 +170,14 @@ export default function OrderDetailPage({
             navigator.clipboard?.writeText(order.customer.phone).catch(() => {})
           }
           aria-label="Copier"
-          className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-sand-deep text-ink-muted"
+          className="grid h-11 w-11 shrink-0 place-items-center rounded-pill border border-sand-deep text-ink-muted"
         >
           <IconCopy className="h-5 w-5" />
         </button>
       </section>
 
       {/* money */}
-      <section className="mx-4 flex flex-col gap-2 rounded-card bg-surface p-4 shadow-sm">
+      <section className="mx-4 flex flex-col gap-2 border border-sand-deep p-4">
         <ul className="flex flex-col gap-1.5">
           {order.items.map((i) => (
             <li key={i.title} className={row}>
@@ -226,7 +226,7 @@ export default function OrderDetailPage({
             <button
               type="button"
               onClick={() => stub(t("needsCredentials"))}
-              className="mt-1 h-11 w-fit rounded-full border border-sand-deep bg-surface px-4 text-caption font-semibold"
+              className="mt-1 h-11 w-fit rounded-pill border border-sand-deep bg-surface px-4 text-caption font-semibold"
             >
               {t("printLabel")}
             </button>
@@ -237,7 +237,7 @@ export default function OrderDetailPage({
             <button
               type="button"
               onClick={() => stub(t("needsCredentials"))}
-              className="mt-1 flex h-11 w-fit items-center gap-2 rounded-full border border-sand-deep bg-surface px-4 text-caption font-semibold"
+              className="mt-1 flex h-11 w-fit items-center gap-2 rounded-pill border border-sand-deep bg-surface px-4 text-caption font-semibold"
             >
               <IconAlert className="h-4 w-4 text-warning" />
               {t("createParcel")}
@@ -256,7 +256,7 @@ export default function OrderDetailPage({
             <li key={step} className="flex gap-3">
               <div className="flex flex-col items-center">
                 <span
-                  className={`mt-1 h-4 w-4 shrink-0 rounded-full border-2 ${
+                  className={`mt-1 h-4 w-4 shrink-0 rounded-pill border-2 ${
                     isDone ? "border-rose bg-rose" : "border-sand-deep bg-surface"
                   }`}
                 />
@@ -306,7 +306,7 @@ export default function OrderDetailPage({
               type="button"
               onClick={() => move(next[1])}
               disabled={busy !== null}
-              className="h-11 rounded-full border border-danger/40 px-5 text-body font-semibold text-danger disabled:opacity-50"
+              className="h-11 rounded-pill border border-danger/40 px-5 text-body font-semibold text-danger disabled:opacity-50"
             >
               {ts(next[1])}
             </button>
@@ -315,7 +315,7 @@ export default function OrderDetailPage({
             type="button"
             onClick={() => move(next[0])}
             disabled={busy !== null}
-            className="h-11 flex-1 rounded-full bg-rose px-5 text-body font-semibold text-white hover:bg-rose-hover disabled:bg-sand-deep disabled:text-ink-faint"
+            className="h-11 flex-1 rounded-pill bg-rose px-5 text-body font-semibold text-paper hover:bg-rose-hover disabled:bg-sand-deep disabled:text-ink-faint"
           >
             {busy ? tc("loading") : t(`moveTo.${next[0]}`)}
           </button>

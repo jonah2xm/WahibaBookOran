@@ -7,69 +7,105 @@
 ------------------------------------------------------------------- */
 
 @theme {
-  /* surfaces */
-  --color-paper: #faf6f0;
-  --color-surface: #ffffff;
-  --color-sand: #f2e9dc;
-  --color-sand-deep: #e3d5c3;
-  /* the board's canvas backdrop, used behind phone-width layouts on desktop */
-  --color-canvas: #eae1d6;
+  /* ------------------------------------------------------------------
+     Transcribed from BookOran31.dc.html in the Claude Design project
+     "Design direction for home screens" (4f3f80c7). This replaces the
+     earlier "Paper" palette wholesale: the board adopted the Medina
+     direction — deep green and gold on cream, Bodoni Moda display.
+
+     The names are unchanged on purpose, so every existing bg-surface /
+     text-rose / border-sand-deep picks up the new value without touching
+     a className. Do not invent values here: mirror the board.
+  ------------------------------------------------------------------- */
+
+  /* surfaces — the board contains NO white anywhere. Cards sit directly
+     on paper or sand and are separated by hairlines, not elevation, so
+     `surface` is paper rather than a lighter card colour. */
+  --color-paper: #faf5ec;
+  --color-surface: #faf5ec;
+  --color-sand: #ebdfcd;
+  /* also the hairline rule colour: 1px #dccfbc is the board's divider */
+  --color-sand-deep: #dccfbc;
+  --color-canvas: #14100e;
 
   /* brand */
-  --color-rose: #b34a62;
-  --color-rose-hover: #9a3e53;
-  --color-rose-300: #e9a7b5;
-  --color-rose-50: #fbedf0;
+  --color-rose: #a63a55;
+  --color-rose-hover: #8e3049;
+  --color-rose-deep: #7e2a3f;
+  --color-rose-300: #c9b9a4;
+  --color-rose-50: #f3e3e7;
+
+  /* the Medina pair: deep green blocks carrying gold ornament */
+  --color-deep: #1e3a34;
+  --color-gold: #c9962f;
+  /* gold is unreadable as text on cream; this is its text-safe partner */
+  --color-gold-ink: #a8791f;
 
   /* ink */
-  --color-ink: #1a1614;
-  --color-ink-muted: #6b605a;
-  --color-ink-faint: #9c918a;
+  --color-ink: #1a1512;
+  --color-body: #5a4e44;
+  --color-ink-muted: #8a7a6e;
+  --color-ink-faint: #b3a492;
+  --color-ink-deep: #14100e;
+
+  /* a cover with no image: the board prints the title on a flat spine */
+  --color-cover: #8c8279;
+  --color-cover-ink: #1b1410;
 
   /* semantic */
-  --color-success: #2e7d5b;
-  --color-warning: #b4762a;
-  --color-danger: #b3352f;
+  --color-success: #2f6b4f;
+  --color-warning: #a8791f;
+  --color-danger: #9e2a2a;
+  /* the board defines no blue; carried over from the Paper palette */
   --color-info: #3a6b8a;
 
-  /* admin dark mode surface (A2·b) */
-  --color-ink-deep: #16130f;
-
   /* type */
-  --font-display: var(--font-fraunces), Georgia, serif;
-  --font-ui: var(--font-jakarta), system-ui, sans-serif;
-  --font-ar: var(--font-tajawal), system-ui, sans-serif;
+  --font-display: var(--font-bodoni), Georgia, serif;
+  --font-ui: var(--font-hanken), system-ui, sans-serif;
+  --font-ar: var(--font-kufi), system-ui, sans-serif;
 
-  --text-display-lg: 32px;
-  --text-display-lg--line-height: 38px;
-  --text-display-lg--font-weight: 700;
-  --text-display: 26px;
-  --text-display--line-height: 32px;
-  --text-display--font-weight: 700;
-  --text-title: 20px;
-  --text-title--line-height: 28px;
+  --text-display-lg: 42px;
+  --text-display-lg--line-height: 44px;
+  --text-display-lg--font-weight: 500;
+  --text-display: 29px;
+  --text-display--line-height: 34px;
+  --text-display--font-weight: 600;
+  --text-title: 22px;
+  --text-title--line-height: 27px;
   --text-title--font-weight: 600;
-  --text-body-lg: 17px;
-  --text-body-lg--line-height: 26px;
-  --text-body: 15px;
-  --text-body--line-height: 23px;
-  --text-caption: 13px;
-  --text-caption--line-height: 18px;
+  --text-body-lg: 16px;
+  --text-body-lg--line-height: 25px;
+  --text-body: 14px;
+  --text-body--line-height: 21px;
+  --text-caption: 12.5px;
+  --text-caption--line-height: 17px;
   --text-caption--font-weight: 500;
-  --text-micro: 11px;
-  --text-micro--line-height: 14px;
+  --text-micro: 9.5px;
+  --text-micro--line-height: 12px;
   --text-micro--font-weight: 600;
 
-  /* radii */
-  --radius-cover: 8px;
-  --radius-input: 12px;
-  --radius-card: 16px;
-  --radius-sheet: 24px;
+  /* radii — the board is square. Only three values exist in it: 1px on
+     covers, 100px on pills, 50% on round buttons. There is no card
+     radius any more, which is why `card` is 1px and not a mistake. */
+  --radius-cover: 1px;
+  --radius-card: 1px;
+  /* Square like everything else. The board has no boxed input at all —
+     a field is a hairline underline — so this only ever applies to the
+     small blocks that still carry a fill. Pills use --radius-pill. */
+  --radius-input: 1px;
+  --radius-sheet: 1px;
+  --radius-pill: 100px;
 
-  /* elevation */
-  --shadow-sm: 0 1px 2px rgba(26, 22, 20, 0.06);
-  --shadow-md: 0 4px 16px rgba(26, 22, 20, 0.08);
-  --shadow-lg: 0 12px 32px rgba(26, 22, 20, 0.12);
+  /* elevation — reserved for things that leave the page: sheets, the
+     accent button, a book lifting off the shelf. Flat surfaces get a
+     hairline instead. */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 10px 22px -8px rgba(166, 58, 85, 0.7);
+  --shadow-lg: 0 -20px 50px -16px rgba(20, 16, 14, 0.5);
+  --shadow-book: inset 8px 0 0 rgba(0, 0, 0, 0.17),
+    inset 10px 0 0 rgba(255, 255, 255, 0.13),
+    inset -3px 0 0 rgba(255, 255, 255, 0.3),
+    0 16px 26px -12px rgba(26, 21, 18, 0.5);
 }
 
 @layer base {
@@ -117,6 +153,194 @@
 }
 
 @layer utilities {
+  /* The board draws a book, not a rectangle: a dark gutter down the spine,
+     a lit page edge opposite, and the volume lifting off the shelf.
+
+     The insets are on ::after rather than on the element itself because a
+     real Cloudinary cover is an <img> child, and a box-shadow set on the
+     parent paints behind it. */
+  .book {
+    position: relative;
+    border-radius: var(--radius-cover);
+    box-shadow: 0 16px 26px -12px rgba(26, 21, 18, 0.5);
+  }
+  .book::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    box-shadow:
+      inset 8px 0 0 rgba(0, 0, 0, 0.17),
+      inset 10px 0 0 rgba(255, 255, 255, 0.13),
+      inset -3px 0 0 rgba(255, 255, 255, 0.3);
+  }
+  /* A book opens from the other side in Arabic, so the spine swaps edges —
+     something the board, being LTR only, does not show. */
+  [dir="rtl"] .book::after {
+    box-shadow:
+      inset -8px 0 0 rgba(0, 0, 0, 0.17),
+      inset -10px 0 0 rgba(255, 255, 255, 0.13),
+      inset 3px 0 0 rgba(255, 255, 255, 0.3);
+  }
+
+  /* thumbnail scale: one gutter, a shallower lift */
+  .book-sm {
+    box-shadow: 0 8px 14px -6px rgba(26, 21, 18, 0.45);
+  }
+  .book-sm::after {
+    box-shadow: inset 5px 0 0 rgba(0, 0, 0, 0.17);
+  }
+  [dir="rtl"] .book-sm::after {
+    box-shadow: inset -5px 0 0 rgba(0, 0, 0, 0.17);
+  }
+
+  /* Form grammar (board S6 / admin A4): a field is a label in micro caps
+     over an underlined input. No boxes — the board has no filled inputs,
+     and the hairline is the same one that divides every list. */
+  .field-label {
+    font-size: 9.5px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--color-ink-muted);
+    margin-bottom: 7px;
+    display: block;
+  }
+  .field-underline {
+    width: 100%;
+    box-sizing: border-box;
+    border: none;
+    border-bottom: 1px solid var(--color-ink);
+    background: transparent;
+    outline: none;
+    font-size: 16px;
+    padding: 0 0 9px;
+    color: var(--color-ink);
+  }
+  .field-underline::placeholder {
+    color: var(--color-ink-faint);
+  }
+  .field-underline:focus {
+    border-bottom-color: var(--color-rose);
+  }
+  /* an optional or not-yet-reachable field softens its rule */
+  .field-underline-soft {
+    border-bottom-color: var(--color-sand-deep);
+  }
+
+  /* The board's consent box: a 1.5px ink square that fills with wine and
+     shows a cream check. Written here rather than as an arbitrary Tailwind
+     background-image — a data URI with quotes and a # does not survive that
+     class syntax, and the box silently rendered with no mark at all. */
+  .checkbox-square {
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    flex: 0 0 18px;
+    border: 1.5px solid var(--color-ink);
+    background-color: transparent;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 12px 12px;
+  }
+  .checkbox-square:checked {
+    border-color: var(--color-rose);
+    background-color: var(--color-rose);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23FAF5EC' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 12l6 6L20 6'/%3E%3C/svg%3E");
+  }
+
+  /* a section title sitting on a 2px rule */
+  .section-head {
+    font-family: var(--font-display);
+    font-size: 22px;
+    border-top: 2px solid var(--color-ink);
+    padding-top: 6px;
+    margin-bottom: 16px;
+  }
+
+  /* Sheet chrome, transcribed once: the board gives the sort, category and
+     price sheets the same panel, grabber, centred Bodoni title under a 2px
+     rule, and hairline rows. Square top corners — the board has no radius
+     above 1px except pills. */
+  .sheet-panel {
+    background: var(--color-paper);
+    box-shadow: var(--shadow-lg);
+    padding: 12px 0 22px;
+    animation: bo-sheet 0.28s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  .sheet-grab {
+    width: 40px;
+    height: 4px;
+    border-radius: var(--radius-pill);
+    background: var(--color-sand-deep);
+    margin: 0 auto 14px;
+  }
+  .sheet-title {
+    font-family: var(--font-display);
+    font-size: 22px;
+    text-align: center;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--color-ink);
+    margin: 0 22px;
+  }
+  .sheet-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    width: 100%;
+    padding: 15px 22px;
+    border-bottom: 1px solid var(--color-sand-deep);
+    font-size: 15px;
+    text-align: start;
+  }
+
+  @keyframes bo-sheet {
+    from {
+      transform: translateY(100%);
+    }
+    to {
+      transform: none;
+    }
+  }
+
+  /* Grows a small control's hit area to 44px without changing how it looks
+     (brief §8). The board draws 26px discs; a thumb needs more than that. */
+  .tap::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 44px;
+    height: 44px;
+    transform: translate(-50%, -50%);
+  }
+
+  /* the tricolour rule that caps the libraire's note */
+  .rule-tricolour {
+    background: repeating-linear-gradient(
+      90deg,
+      var(--color-rose) 0 10px,
+      var(--color-gold) 10px 20px,
+      var(--color-deep) 20px 30px
+    );
+  }
+
+  /* zellige: the gold geometry over every deep-green block */
+  .ornament {
+    background-image:
+      radial-gradient(circle at 0 0, #c9962f 2px, transparent 2.5px),
+      radial-gradient(circle at 21px 21px, #c9962f 2px, transparent 2.5px),
+      linear-gradient(45deg, transparent 46%, #c9962f 46%, #c9962f 54%, transparent 54%),
+      linear-gradient(-45deg, transparent 46%, #c9962f 46%, #c9962f 54%, transparent 54%);
+    background-size: 42px 42px;
+  }
+  .ornament-plain {
+    background-image:
+      linear-gradient(45deg, transparent 46%, #c9962f 46%, #c9962f 54%, transparent 54%),
+      linear-gradient(-45deg, transparent 46%, #c9962f 46%, #c9962f 54%, transparent 54%);
+    background-size: 34px 34px;
+  }
+
   /* horizontal rails (category strip, carousels) hide their scrollbar */
   .rail {
     scrollbar-width: none;

@@ -155,61 +155,75 @@ export function BooksBrowser({
 
   return (
     <>
-      <header className="sticky top-0 z-10 flex flex-col gap-3 border-b border-sand-deep bg-paper/95 pb-3 pt-3 backdrop-blur">
-        <div className="flex items-baseline justify-between px-4">
-          <h1 className="font-display text-title">{t("title")}</h1>
-          <span className="text-caption text-ink-muted">
+      <header className="flex flex-col bg-paper pt-5">
+        <div className="flex items-baseline justify-between px-[22px]">
+          <h1 className="font-display text-[32px] font-semibold tracking-[-0.02em]">
+            {t("title")}
+          </h1>
+          <span className="text-[11px] uppercase tracking-[0.14em] text-ink-muted">
             {t("count", { count: results.length })}
           </span>
         </div>
 
-        <div className="mx-4 flex h-11 items-center gap-2 rounded-full border border-sand-deep bg-surface px-4">
-          <IconSearch className="h-5 w-5 text-ink-faint" />
+        {/* An underline, not a pill: the board sets search on the same
+            hairline grammar as the rest of the page. */}
+        <div className="mx-[22px] mt-4 flex items-center gap-2.5 border-b border-ink pb-2.5">
+          <IconSearch className="h-4 w-4 shrink-0 text-ink-muted" />
           <input
             value={query}
             onChange={(e) => push({ query: e.target.value }, "replace")}
             placeholder={t("searchPlaceholder")}
             aria-label={t("searchPlaceholder")}
-            className="min-w-0 flex-1 bg-transparent text-body outline-none placeholder:text-ink-faint"
+            className="min-w-0 flex-1 bg-transparent text-body outline-none placeholder:text-ink-muted"
           />
           {query ? (
             <button
               type="button"
               onClick={() => push({ query: "" }, "replace")}
               aria-label={tf("reset")}
-              className="grid h-8 w-8 place-items-center text-ink-faint"
+              className="grid h-8 w-8 shrink-0 place-items-center text-ink-faint"
             >
               ×
             </button>
           ) : null}
         </div>
 
-        {/* sort + price */}
-        <div className="flex items-center gap-2 px-4">
+        {/* sort + price — labelled values on a rule, not buttons */}
+        <div className="flex items-center gap-4 px-[22px] pt-3.5">
           <button
             type="button"
             onClick={() => setSortOpen(true)}
             aria-haspopup="dialog"
             aria-expanded={sortOpen}
-            aria-label={t("sortLabel")}
-            className="flex h-10 flex-1 items-center justify-between gap-2 rounded-full border border-sand-deep bg-surface ps-4 pe-3 text-caption font-medium text-ink"
+            className="flex min-h-11 items-center gap-1.5"
           >
-            <span className="line-clamp-1">{tf(filters.sort)}</span>
-            <span className="shrink-0 rotate-90 text-ink-muted">
-              <IconChevron className="h-3.5 w-3.5" />
+            <span className="text-[10px] uppercase tracking-[0.16em] text-ink-muted">
+              {t("sortLabel")}
+            </span>
+            <span className="text-[13.5px] font-semibold">
+              {tf(filters.sort)}
+            </span>
+            <span className="rotate-90 text-ink">
+              <IconChevron className="h-[11px] w-[11px]" />
             </span>
           </button>
+
+          <span className="h-4 w-px shrink-0 bg-sand-deep" />
 
           <button
             type="button"
             onClick={() => setPriceOpen(true)}
-            className={`flex h-10 shrink-0 items-center rounded-full border px-4 text-caption font-medium ${
-              priceSet
-                ? "border-rose bg-rose-50 text-rose"
-                : "border-sand-deep bg-surface text-ink"
-            }`}
+            aria-haspopup="dialog"
+            className="flex min-h-11 items-center gap-1.5"
           >
-            <span className={priceSet ? "lat" : undefined}>{priceLabel}</span>
+            <span className="text-[10px] uppercase tracking-[0.16em] text-ink-muted">
+              {tf("price")}
+            </span>
+            <span
+              className={`text-[13.5px] font-semibold ${priceSet ? "lat text-rose" : ""}`}
+            >
+              {priceLabel}
+            </span>
           </button>
 
           {/* a sibling, not nested inside the button above: interactive
@@ -221,7 +235,7 @@ export function BooksBrowser({
               onClick={() =>
                 push({ filters: { ...filters, min: null, max: null } }, "push")
               }
-              className="grid h-10 w-10 shrink-0 place-items-center rounded-full border border-sand-deep bg-surface text-ink-muted"
+              className="-ms-2.5 grid h-[18px] w-[18px] shrink-0 place-items-center rounded-full bg-sand text-[12px] text-ink-muted"
             >
               ×
             </button>
@@ -229,15 +243,15 @@ export function BooksBrowser({
         </div>
 
         {/* category rail — one at a time, "Tous" clears it */}
-        <div className="rail flex gap-2 overflow-x-auto px-4">
+        <div className="rail flex gap-2 overflow-x-auto px-[22px] pb-[18px] pt-4">
           <button
             type="button"
             aria-pressed={filters.category === null}
             onClick={() => push({ filters: { ...filters, category: null } }, "push")}
-            className={`h-10 shrink-0 rounded-full border px-4 text-caption font-medium ${
+            className={`shrink-0 rounded-pill border border-ink px-[15px] py-2 text-caption font-semibold ${
               filters.category === null
-                ? "border-rose bg-rose text-white"
-                : "border-sand-deep bg-surface text-ink"
+                ? "bg-ink text-paper"
+                : "text-ink"
             }`}
           >
             {t("all")}
@@ -255,10 +269,8 @@ export function BooksBrowser({
                 onClick={() =>
                   push({ filters: { ...filters, category: c.slug } }, "push")
                 }
-                className={`h-10 shrink-0 rounded-full border px-4 text-caption font-medium ${
-                  active
-                    ? "border-rose bg-rose text-white"
-                    : "border-sand-deep bg-surface text-ink"
+                className={`shrink-0 rounded-pill border border-ink px-[15px] py-2 text-caption font-semibold ${
+                  active ? "bg-ink text-paper" : "text-ink"
                 }`}
               >
                 {pick(c.name, locale)}
@@ -269,7 +281,7 @@ export function BooksBrowser({
       </header>
 
       {results.length > 0 ? (
-        <div className="mt-4 grid grid-cols-2 gap-x-3 gap-y-5 px-4 pb-6">
+        <div className="mx-[22px] grid grid-cols-2 gap-x-4 gap-y-[26px] border-t-2 border-ink pb-8 pt-[22px]">
           {results.map((b) => (
             <BookCard key={b.slug} book={b} addable />
           ))}
@@ -282,7 +294,7 @@ export function BooksBrowser({
           <button
             type="button"
             onClick={() => push({ query: "", filters: defaultFilters }, "push")}
-            className="mt-2 h-11 rounded-full bg-rose px-6 text-body font-semibold text-white"
+            className="mt-2 h-11 rounded-full bg-rose px-6 text-body font-semibold text-paper"
           >
             {t("clearAll")}
           </button>

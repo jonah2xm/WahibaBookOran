@@ -22,8 +22,10 @@ export function AdminTabBar({ salesBadge = 0 }: { salesBadge?: number }) {
   ];
 
   return (
-    <nav className="sticky bottom-0 z-20 border-t border-sand-deep bg-surface/95 backdrop-blur">
-      <ul className="mx-auto flex max-w-[640px] items-stretch justify-around px-2 pb-[env(safe-area-inset-bottom)]">
+    /* A hard ink rule, matching the shop: the board closes every screen
+       with the same hairline it divides lists with. */
+    <nav className="sticky bottom-0 z-20 border-t border-ink bg-paper">
+      <ul className="mx-auto flex max-w-[640px] items-stretch justify-around pb-[env(safe-area-inset-bottom)]">
         {items.map(({ href, label, Icon, badge }) => {
           const active =
             href === "/" ? pathname === "/" : pathname.startsWith(href);
@@ -32,14 +34,14 @@ export function AdminTabBar({ salesBadge = 0 }: { salesBadge?: number }) {
               <Link
                 href={href}
                 aria-current={active ? "page" : undefined}
-                className={`flex min-h-[56px] flex-col items-center justify-center gap-1 text-micro uppercase tracking-[0.06em] ${
+                className={`flex min-h-[56px] flex-col items-center justify-center gap-1.5 px-1 pb-1 pt-0.5 text-[9px] font-semibold uppercase tracking-[0.12em] ${
                   active ? "text-rose" : "text-ink-muted"
                 }`}
               >
                 <span className="relative">
-                  <Icon className="h-6 w-6" />
+                  <Icon className="h-[19px] w-[19px]" />
                   {badge ? (
-                    <span className="lat absolute -end-2 -top-1 grid h-[18px] min-w-[18px] place-items-center rounded-full bg-rose px-1 text-[10px] font-semibold text-white">
+                    <span className="lat absolute -end-3 -top-1 grid h-4 min-w-4 place-items-center rounded-pill bg-rose px-1 text-[10px] font-bold text-paper">
                       {badge}
                     </span>
                   ) : null}

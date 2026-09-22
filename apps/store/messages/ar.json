@@ -17,12 +17,24 @@
     "cod": "الدفع عند الاستلام",
     "new": "الجديد",
     "bestSellers": "الأكثر مبيعاً",
-    "seeAll": "عرض الكل"
+    "seeAll": "عرض الكل",
+    "kicker": "مكتبة · وهران",
+    "taglineRich": "كتب <em>مختارة</em>، تُوصَّل إلى كامل الجزائر.",
+    "quote": "«تسعة عناوين، قُرئت كلّها قبل أن توضع في الرفوف.»",
+    "signature": "وهيبة — BookOran31",
+    "adminSpace": "فضاء المسيّر"
   },
   "trust": {
     "cod": "الدفع عند الاستلام",
     "coverage": "التوصيل إلى 58 ولاية",
-    "returns": "الإرجاع خلال 48 ساعة"
+    "returns": "الإرجاع خلال 48 ساعة",
+    "payLabel": "الدفع",
+    "payValue": "عند الاستلام",
+    "shipLabel": "التوصيل",
+    "shipValue": "58 ولاية",
+    "returnLabel": "الإرجاع",
+    "returnValue": "خلال 48 ساعة",
+    "phoneLabel": "الهاتف"
   },
   "book": {
     "inStock": "متوفر",
@@ -65,7 +77,7 @@
     "subtotal": "المجموع الفرعي",
     "delivery": "التوصيل",
     "deliveryNextStep": "تُحتسب في الخطوة التالية",
-    "freeShipHint": "بقي {amount} للحصول على توصيل مجاني.",
+    "freeShipHint": "بقي <strong>{amount}</strong> للحصول على توصيل مجاني.",
     "freeShipReached": "التوصيل مجاني — وصلت إلى الحد.",
     "checkout": "إتمام الطلب",
     "remove": "حذف",

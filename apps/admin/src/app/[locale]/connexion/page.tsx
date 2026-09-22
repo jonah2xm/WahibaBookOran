@@ -71,7 +71,7 @@ export default function LoginPage() {
   }
 
   const field =
-    "h-11 w-full rounded-input border border-sand-deep bg-surface px-4 text-body outline-none placeholder:text-ink-faint focus:border-rose";
+    "field-underline";
   const label = "text-micro uppercase tracking-[0.06em] text-ink-muted";
 
   return (
@@ -138,7 +138,7 @@ export default function LoginPage() {
         <button
           type="submit"
           disabled={pending}
-          className="mt-1 h-11 rounded-full bg-rose text-body font-semibold text-white hover:bg-rose-hover disabled:opacity-60"
+          className="mt-1 h-11 rounded-pill bg-rose text-body font-semibold text-paper hover:bg-rose-hover disabled:opacity-60"
         >
           {t("submit")}
         </button>

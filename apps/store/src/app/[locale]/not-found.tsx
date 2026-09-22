@@ -14,7 +14,7 @@ export default async function NotFound() {
       <p className="text-body text-ink-muted">{t("notFoundBody")}</p>
       <Link
         href="/"
-        className="mt-2 grid h-11 place-items-center rounded-full bg-rose px-6 text-body font-semibold text-white"
+        className="mt-2 grid h-11 place-items-center rounded-full bg-rose px-6 text-body font-semibold text-paper"
       >
         {t("home")}
       </Link>

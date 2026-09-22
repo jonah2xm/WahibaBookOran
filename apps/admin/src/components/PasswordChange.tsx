@@ -68,7 +68,7 @@ export function PasswordChange() {
         <button
           type="button"
           onClick={() => setOpen(true)}
-          className="h-11 w-fit rounded-full border border-sand-deep px-4 text-caption font-semibold"
+          className="h-11 w-fit rounded-pill border border-sand-deep px-4 text-caption font-semibold"
         >
           {t("change")}
         </button>
@@ -124,7 +124,7 @@ export function PasswordChange() {
           type="button"
           disabled={busy || !current || next.length < 10 || !repeat}
           onClick={submit}
-          className="h-11 rounded-full bg-rose px-5 text-caption font-semibold text-white disabled:bg-sand-deep disabled:text-ink-faint"
+          className="h-11 rounded-pill bg-rose px-5 text-caption font-semibold text-paper disabled:bg-sand-deep disabled:text-ink-faint"
         >
           {busy ? tc("loading") : t("submit")}
         </button>
@@ -134,7 +134,7 @@ export function PasswordChange() {
             reset();
             setOpen(false);
           }}
-          className="h-11 rounded-full border border-sand-deep px-5 text-caption font-semibold"
+          className="h-11 rounded-pill border border-sand-deep px-5 text-caption font-semibold"
         >
           {tc("cancel")}
         </button>

@@ -17,12 +17,24 @@
     "cod": "Paiement à la livraison",
     "new": "Nouveautés",
     "bestSellers": "Meilleures ventes",
-    "seeAll": "Tout voir"
+    "seeAll": "Tout voir",
+    "kicker": "Librairie · Oran",
+    "taglineRich": "Des livres <em>choisis</em>, livrés partout en Algérie.",
+    "quote": "« Neuf titres, tous lus avant d'être mis en rayon. »",
+    "signature": "Wahiba — BookOran31",
+    "adminSpace": "Espace gérant"
   },
   "trust": {
     "cod": "Paiement à la livraison",
     "coverage": "Livraison 58 wilayas",
-    "returns": "Retour sous 48 h"
+    "returns": "Retour sous 48 h",
+    "payLabel": "Paiement",
+    "payValue": "À la livraison",
+    "shipLabel": "Livraison",
+    "shipValue": "58 wilayas",
+    "returnLabel": "Retour",
+    "returnValue": "Sous 48 h",
+    "phoneLabel": "Téléphone"
   },
   "book": {
     "inStock": "En stock",
@@ -65,7 +77,7 @@
     "subtotal": "Sous-total",
     "delivery": "Livraison",
     "deliveryNextStep": "calculée à l'étape suivante",
-    "freeShipHint": "Plus que {amount} pour la livraison offerte.",
+    "freeShipHint": "Plus que <strong>{amount}</strong> pour la livraison offerte.",
     "freeShipReached": "Livraison offerte — vous y êtes.",
     "checkout": "Commander",
     "remove": "Retirer",

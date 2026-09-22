@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { notFound } from "next/navigation";
-import { Fraunces, Plus_Jakarta_Sans, Tajawal } from "next/font/google";
+import { Bodoni_Moda, Hanken_Grotesk, Noto_Kufi_Arabic } from "next/font/google";
 import { routing, dirFor } from "@/i18n/routing";
 import { TabBar } from "@/components/TabBar";
 import { CartProvider } from "@/components/CartProvider";
@@ -10,22 +10,22 @@ import { OfflineBanner } from "@/components/OfflineBanner";
 import { SITE_URL } from "@/lib/site";
 import "../globals.css";
 
-const fraunces = Fraunces({
+const bodoni = Bodoni_Moda({
   subsets: ["latin"],
-  variable: "--font-fraunces",
+  variable: "--font-bodoni",
   display: "swap",
 });
 
-const jakarta = Plus_Jakarta_Sans({
+const hanken = Hanken_Grotesk({
   subsets: ["latin"],
-  variable: "--font-jakarta",
+  variable: "--font-hanken",
   display: "swap",
 });
 
-const tajawal = Tajawal({
+const kufi = Noto_Kufi_Arabic({
   subsets: ["arabic"],
   weight: ["400", "500", "700"],
-  variable: "--font-tajawal",
+  variable: "--font-kufi",
   display: "swap",
 });
 
@@ -60,7 +60,7 @@ export default async function LocaleLayout({
     <html
       lang={locale}
       dir={dirFor(locale)}
-      className={`${fraunces.variable} ${jakarta.variable} ${tajawal.variable}`}
+      className={`${bodoni.variable} ${hanken.variable} ${kufi.variable}`}
     >
       <body>
         <NextIntlClientProvider>

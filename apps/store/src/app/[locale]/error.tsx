@@ -47,7 +47,7 @@ export default function ErrorPage({
         <button
           type="button"
           onClick={reset}
-          className="h-11 rounded-full bg-rose text-body font-semibold text-white"
+          className="h-11 rounded-full bg-rose text-body font-semibold text-paper"
         >
           {t("retry")}
         </button>

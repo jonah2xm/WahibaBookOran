@@ -123,7 +123,7 @@ export default function AgreementPage() {
     "h-11 w-full rounded-input border border-sand-deep bg-surface px-3 text-body outline-none placeholder:text-ink-faint focus:border-rose";
   const label = "text-micro uppercase tracking-[0.06em] text-ink-muted";
   const iconBtn =
-    "grid h-9 w-9 shrink-0 place-items-center rounded-full border border-sand-deep bg-surface text-ink-muted disabled:opacity-40";
+    "grid h-9 w-9 shrink-0 place-items-center rounded-pill border border-sand-deep bg-surface text-ink-muted disabled:opacity-40";
 
   /** Non-null inside the list below, where a load has already happened. */
   const list = sections ?? [];
@@ -161,7 +161,7 @@ export default function AgreementPage() {
           return (
             <li
               key={section.key}
-              className="flex flex-col rounded-card bg-surface shadow-sm"
+              className="flex flex-col border border-sand-deep"
             >
               {/* Title gets the full row: on a 375px screen it loses to
                   three side-by-side controls and truncates to "Commande
@@ -189,12 +189,12 @@ export default function AgreementPage() {
                   {t("pointCount", { count: section.points.length })}
                 </span>
                 {section.needsReview ? (
-                  <span className="rounded-full bg-warning/12 px-2.5 py-1 text-micro uppercase tracking-[0.06em] text-warning">
+                  <span className="rounded-pill bg-warning/12 px-2.5 py-1 text-micro uppercase tracking-[0.06em] text-warning">
                     {t("toReview")}
                   </span>
                 ) : null}
                 {missingAr ? (
-                  <span className="rounded-full bg-info/12 px-2.5 py-1 text-micro uppercase tracking-[0.06em] text-info">
+                  <span className="rounded-pill bg-info/12 px-2.5 py-1 text-micro uppercase tracking-[0.06em] text-info">
                     {t("missingAr")}
                   </span>
                 ) : null}
@@ -346,7 +346,7 @@ export default function AgreementPage() {
                     <button
                       type="button"
                       onClick={() => addPoint(i)}
-                      className="h-11 w-fit rounded-full border border-sand-deep bg-surface px-4 text-caption font-semibold"
+                      className="h-11 w-fit rounded-pill border border-sand-deep bg-surface px-4 text-caption font-semibold"
                     >
                       {t("addPoint")}
                     </button>
@@ -359,7 +359,7 @@ export default function AgreementPage() {
                     <button
                       type="button"
                       onClick={() => patchSection(i, { needsReview: false })}
-                      className="h-11 w-fit rounded-full border border-warning/50 px-4 text-caption font-semibold text-warning"
+                      className="h-11 w-fit rounded-pill border border-warning/50 px-4 text-caption font-semibold text-warning"
                     >
                       {t("markReviewed")}
                     </button>
@@ -375,7 +375,7 @@ export default function AgreementPage() {
                           commit(list.filter((_, n) => n !== i));
                           setConfirmKey(null);
                         }}
-                        className="h-11 rounded-full bg-danger px-4 text-caption font-semibold text-white"
+                        className="h-11 rounded-pill bg-danger px-4 text-caption font-semibold text-paper"
                       >
                         {t("confirmDelete")}
                       </button>
@@ -391,7 +391,7 @@ export default function AgreementPage() {
                     <button
                       type="button"
                       onClick={() => setConfirmKey(section.key)}
-                      className="h-11 w-fit rounded-full border border-danger/40 px-4 text-caption font-semibold text-danger"
+                      className="h-11 w-fit rounded-pill border border-danger/40 px-4 text-caption font-semibold text-danger"
                     >
                       {t("deleteSection")}
                     </button>
@@ -416,7 +416,7 @@ export default function AgreementPage() {
           href={`${STORE_URL}/${locale}/conditions`}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center justify-between rounded-card bg-surface px-4 py-3 text-body shadow-sm"
+          className="flex items-center justify-between border border-sand-deep px-4 py-3 text-body"
         >
           {t("preview")}
           <IconChevron className="h-4 w-4 text-ink-faint" />
@@ -444,7 +444,7 @@ export default function AgreementPage() {
       <div className="fixed inset-x-0 bottom-[56px] z-20 mx-auto flex w-full max-w-[640px] items-center gap-3 border-t border-sand-deep bg-surface/95 px-4 py-3 backdrop-blur">
         <span className="flex flex-1 items-center gap-2 text-caption">
           <span
-            className={`h-2 w-2 shrink-0 rounded-full ${
+            className={`h-2 w-2 shrink-0 rounded-pill ${
               dirty ? "bg-warning" : "bg-success"
             }`}
           />
@@ -467,7 +467,7 @@ export default function AgreementPage() {
           type="button"
           onClick={publish}
           disabled={!dirty || publishing}
-          className="h-11 rounded-full bg-rose px-6 text-body font-semibold text-white hover:bg-rose-hover disabled:bg-sand-deep disabled:text-ink-faint"
+          className="h-11 rounded-pill bg-rose px-6 text-body font-semibold text-paper hover:bg-rose-hover disabled:bg-sand-deep disabled:text-ink-faint"
         >
           {publishing ? tc("loading") : t("publish")}
         </button>

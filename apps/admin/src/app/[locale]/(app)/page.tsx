@@ -48,7 +48,7 @@ export default async function DashboardPage({
             })}
           </span>
         </div>
-        <span className="lat grid h-11 w-11 shrink-0 place-items-center rounded-full bg-rose text-caption font-semibold text-white">
+        <span className="lat grid h-11 w-11 shrink-0 place-items-center rounded-pill bg-rose text-caption font-semibold text-paper">
           {initials}
         </span>
       </header>
@@ -90,7 +90,7 @@ export default async function DashboardPage({
         </div>
 
         {data.lowStock.length === 0 ? (
-          <p className="rounded-card bg-surface p-4 text-caption text-ink-muted shadow-sm">
+          <p className="border border-sand-deep p-4 text-caption text-ink-muted">
             {t("stockHealthy")}
           </p>
         ) : (
@@ -99,7 +99,7 @@ export default async function DashboardPage({
               <li key={b.slug}>
                 <Link
                   href={`/stock/${b.slug}`}
-                  className="flex items-center gap-3 rounded-card bg-surface p-3 shadow-sm"
+                  className="flex items-center gap-3 border border-sand-deep p-3"
                 >
                   <IconAlert
                     className={`h-5 w-5 shrink-0 ${
@@ -115,7 +115,7 @@ export default async function DashboardPage({
                     </span>
                   </span>
                   <span
-                    className={`shrink-0 rounded-full px-2.5 py-1 text-micro uppercase tracking-[0.06em] ${
+                    className={`shrink-0 rounded-pill px-2.5 py-1 text-micro uppercase tracking-[0.06em] ${
                       b.remaining === 0
                         ? "bg-danger/12 text-danger"
                         : "bg-warning/12 text-warning"
@@ -144,7 +144,7 @@ export default async function DashboardPage({
         </h2>
 
         {data.recentOrders.length === 0 ? (
-          <p className="rounded-card bg-surface p-4 text-caption text-ink-muted shadow-sm">
+          <p className="border border-sand-deep p-4 text-caption text-ink-muted">
             {t("noOrders")}
           </p>
         ) : (
@@ -153,7 +153,7 @@ export default async function DashboardPage({
               <li key={o.orderNumber}>
                 <Link
                   href={`/ventes/${o.orderNumber}`}
-                  className="flex items-center gap-3 rounded-card bg-surface p-3 shadow-sm"
+                  className="flex items-center gap-3 border border-sand-deep p-3"
                 >
                   <span className="flex min-w-0 flex-1 flex-col">
                     <span className="line-clamp-1 text-body font-semibold">
@@ -166,7 +166,7 @@ export default async function DashboardPage({
                     </span>
                   </span>
                   <span
-                    className={`shrink-0 rounded-full px-2.5 py-1 text-micro uppercase tracking-[0.06em] ${
+                    className={`shrink-0 rounded-pill px-2.5 py-1 text-micro uppercase tracking-[0.06em] ${
                       STATUS_TONE[o.status as OrderStatus]
                     }`}
                   >
@@ -201,7 +201,7 @@ function Tile({
         : "text-ink";
 
   return (
-    <div className="flex flex-col gap-1 rounded-card bg-surface p-4 shadow-sm">
+    <div className="flex flex-col gap-1 border border-sand-deep p-4">
       <span className="text-micro uppercase tracking-[0.06em] text-ink-muted">
         {label}
       </span>

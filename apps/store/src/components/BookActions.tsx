@@ -65,8 +65,8 @@ export function BookActions({ book }: { book: Book }) {
 
   return (
     <>
-      <div className="flex items-center justify-between px-4 py-4">
-        <span className="text-body font-semibold">{t("quantity")}</span>
+      <div className="mx-[22px] flex items-center justify-between border-b border-sand-deep py-[18px]">
+        <span className="text-[15px] font-medium">{t("quantity")}</span>
         <QuantityStepper
           value={effective || 1}
           onChange={setQuantity}
@@ -77,13 +77,13 @@ export function BookActions({ book }: { book: Book }) {
       {/* Fixed, not sticky: the bar's place in the document is mid-page, and
           sticky-bottom from there is unreliable across browsers. Pinned to
           the phone frame instead, matching the 480px shell in the layout. */}
-      <div className="fixed inset-x-0 bottom-0 z-20 mx-auto w-full max-w-[480px] border-t border-sand-deep bg-surface/95 px-4 py-3 backdrop-blur">
-        <div className="flex items-center gap-3 pb-[env(safe-area-inset-bottom)]">
+      <div className="fixed inset-x-0 bottom-0 z-20 mx-auto w-full max-w-[480px] border-t border-ink bg-paper px-5 pb-5 pt-3.5">
+        <div className="flex items-center gap-3.5 pb-[env(safe-area-inset-bottom)]">
           <div className="flex shrink-0 flex-col">
-            <span className="text-micro uppercase tracking-[0.06em] text-ink-muted">
+            <span className="text-[9px] uppercase tracking-[0.2em] text-ink-muted">
               {t("total")}
             </span>
-            <span className="lat font-display text-title">
+            <span className="lat mt-px font-display text-[22px] font-semibold tracking-[-0.01em]">
               {formatDzd(book.priceDzd * (effective || 0))}
             </span>
           </div>
@@ -91,7 +91,7 @@ export function BookActions({ book }: { book: Book }) {
             type="button"
             onClick={addToCart}
             disabled={out || atCap}
-            className={`ms-auto h-11 flex-1 rounded-full px-5 text-body font-semibold text-white transition-colors disabled:bg-sand-deep disabled:text-ink-faint ${
+            className={`ms-auto flex-1 rounded-pill px-5 py-4 text-[15px] font-semibold text-paper shadow-md transition-colors disabled:bg-sand-deep disabled:text-ink-faint disabled:shadow-none ${
               justAdded ? "bg-success" : "bg-rose hover:bg-rose-hover"
             }`}
           >

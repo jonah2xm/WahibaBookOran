@@ -80,7 +80,7 @@ export default function AdminBooksPage() {
           onChange={(e) => setQuery(e.target.value)}
           placeholder={t("searchPlaceholder")}
           aria-label={t("searchPlaceholder")}
-          className="h-11 w-full rounded-input border border-sand-deep bg-surface px-4 text-body outline-none placeholder:text-ink-faint focus:border-rose"
+          className="field-underline"
         />
 
         <div className="rail flex gap-2 overflow-x-auto">
@@ -90,9 +90,9 @@ export default function AdminBooksPage() {
               type="button"
               aria-pressed={chip === c.key}
               onClick={() => setChip(c.key)}
-              className={`h-10 shrink-0 rounded-full border px-4 text-caption font-medium ${
+              className={`h-10 shrink-0 rounded-pill border px-4 text-caption font-medium ${
                 chip === c.key
-                  ? "border-rose bg-rose text-white"
+                  ? "border-rose bg-rose text-paper"
                   : "border-sand-deep bg-surface text-ink"
               }`}
             >
@@ -113,7 +113,7 @@ export default function AdminBooksPage() {
               <li key={b.slug}>
                 <Link
                   href={`/livres/${b.slug}`}
-                  className="flex items-center gap-3 rounded-card bg-surface p-3 shadow-sm"
+                  className="flex items-center gap-3 border border-sand-deep p-3"
                 >
                   {/* Thumbnail, so a book still missing its cover is visible
                       at a glance instead of only inside the editor. */}
@@ -141,7 +141,7 @@ export default function AdminBooksPage() {
                   </span>
 
                   <span
-                    className={`shrink-0 rounded-full px-2.5 py-1 text-micro uppercase tracking-[0.06em] ${
+                    className={`shrink-0 rounded-pill px-2.5 py-1 text-micro uppercase tracking-[0.06em] ${
                       state.kind === "out"
                         ? "bg-ink/8 text-ink-muted"
                         : state.kind === "low"
@@ -171,7 +171,7 @@ export default function AdminBooksPage() {
       <Link
         href="/livres/nouveau"
         aria-label={t("add")}
-        className="fixed bottom-20 end-4 z-20 grid h-14 w-14 place-items-center rounded-full bg-rose text-white shadow-lg"
+        className="fixed bottom-20 end-4 z-20 grid h-14 w-14 place-items-center rounded-pill bg-rose text-paper shadow-lg"
       >
         <svg viewBox="0 0 24 24" className="h-7 w-7" fill="none" aria-hidden>
           <path

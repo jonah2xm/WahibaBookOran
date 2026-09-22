@@ -6,98 +6,104 @@ import { Cover } from "./Cover";
 import { Price } from "./Price";
 
 /**
- * Board §02 "Carte livre — grille & liste".
- * Grid variant: cover 2:3, title in Fraunces, author muted, price.
- * Out-of-stock dims the cover and shows the label over it.
+ * Board §02. Two shapes:
+ *
+ * - `grid` — the book above a hairline, its title, author, price and the
+ *   add button below it. Used in the rails and the two-column grids.
+ * - `list` — the numbered bestseller row: rank, thumbnail, title, price.
+ *
+ * The board puts the add button in the info block rather than on the cover,
+ * so the artwork is never covered.
  */
 export function BookCard({
   book,
   variant = "grid",
   width,
   addable = false,
+  rank,
 }: {
   book: Book;
   variant?: "grid" | "list";
   /** fixed width for the horizontal rails on S1 */
   width?: number;
-  /** show the round "+" on the cover — two-column grids only, never the rails */
   addable?: boolean;
+  /** 1-based position, rendered as "01". The catalogue has no ranking
+   *  field — this is the row's place in the list, nothing more. */
+  rank?: number;
 }) {
   const locale = useLocale();
   const t = useTranslations("book");
   const state = stockState(book);
   const out = state.kind === "out";
-
   const showAdd = addable && !out;
 
   if (variant === "list") {
     return (
-      /* Same stretched link as the grid, for the same reason: the "+" has to
-         be a sibling of the <a>, not a child of it. */
-      <article className="relative flex items-center gap-3 rounded-card bg-surface p-3 shadow-sm">
-        <div className="w-[64px] shrink-0">
-          <Cover book={book} locale={locale} className={out ? "opacity-60" : ""} />
+      <article className="relative flex items-center gap-3.5 border-b border-sand-deep py-4">
+        {rank !== undefined ? (
+          <span className="lat w-6 shrink-0 font-display text-[20px] text-gold">
+            {String(rank).padStart(2, "0")}
+          </span>
+        ) : null}
+        <div className="w-11 shrink-0">
+          <Cover book={book} locale={locale} small className={out ? "opacity-60" : ""} />
         </div>
-        <div className="flex min-w-0 flex-1 flex-col gap-1">
+        <div className="flex min-w-0 flex-1 flex-col">
           <Link
             href={`/livre/${book.slug}`}
-            className="font-display line-clamp-2 text-body font-semibold after:absolute after:inset-0 after:content-['']"
+            className="font-display line-clamp-2 text-[18px] leading-[1.1] tracking-[-0.012em] after:absolute after:inset-0 after:content-['']"
           >
             {pick(book.title, locale)}
           </Link>
-          <span className="line-clamp-1 text-caption text-ink-muted">
+          <span className="mt-0.5 line-clamp-1 text-caption text-ink-muted">
             {pick(book.author, locale)}
           </span>
-          <Price centimes={book.priceDzd} compareAt={book.compareAtPriceDzd} />
         </div>
-        {/* At the end of the row, not on the cover: a 44px button over a
-            64px thumbnail would bury it. */}
-        {showAdd ? (
-          <AddToCartButton book={book} className="relative" />
-        ) : null}
+        <div className="flex shrink-0 flex-col items-end gap-1.5">
+          <Price centimes={book.priceDzd} compareAt={book.compareAtPriceDzd} />
+          {showAdd ? <AddToCartButton book={book} outline /> : null}
+        </div>
       </article>
     );
   }
 
   return (
-    /* The link is stretched over the card with a pseudo-element instead of
-       wrapping it, so the "+" can be a real <button> beside it rather than
-       nested inside an <a>. */
     <article
-      className={`relative flex flex-col gap-2 ${width ? "shrink-0" : ""}`}
+      className={`relative flex flex-col ${width ? "shrink-0" : ""}`}
       style={width ? { width } : undefined}
     >
       <div className="relative">
         <Cover book={book} locale={locale} className={out ? "opacity-55" : ""} />
         {out ? (
-          <span className="absolute inset-x-2 bottom-2 rounded-full bg-surface/95 px-2 py-1 text-center text-micro uppercase tracking-[0.06em] text-ink-muted">
+          <span className="absolute inset-x-2 bottom-2 z-10 rounded-pill bg-paper/95 px-2 py-1 text-center text-micro uppercase tracking-[0.06em] text-ink-muted">
             {t("outOfStock")}
           </span>
         ) : state.kind === "low" ? (
-          <span
-            /* The chip moves to the top when the "+" is there rather than
-               sharing the bottom row: beside a 44px button a 124px rail card
-               leaves it 60px, and "Plus que 3 exemplaires" would stack four
-               lines deep. */
-            className={`absolute inset-x-2 rounded-full bg-surface/95 px-2 py-1 text-center text-micro uppercase tracking-[0.06em] text-warning ${
-              showAdd ? "top-2" : "bottom-2"
-            }`}
-          >
+          <span className="absolute inset-x-2 bottom-2 z-10 rounded-pill bg-paper/95 px-2 py-1 text-center text-micro uppercase tracking-[0.06em] text-warning">
             {t("lowStock", { count: state.count })}
           </span>
         ) : null}
+      </div>
+
+      {/* The hairline under the cover is the board's device for tying the
+          book to its caption — it replaces the old card's edge. */}
+      <div className="mt-3 flex items-start justify-between gap-2 border-t border-ink pt-2.5">
+        <div className="min-w-0">
+          <Link
+            href={`/livre/${book.slug}`}
+            className="font-display line-clamp-2 text-[16px] leading-[1.12] tracking-[-0.01em] after:absolute after:inset-0 after:content-['']"
+          >
+            {pick(book.title, locale)}
+          </Link>
+          <span className="mt-0.5 line-clamp-1 text-[11.5px] text-ink-muted">
+            {pick(book.author, locale)}
+          </span>
+          <div className="mt-1.5">
+            <Price centimes={book.priceDzd} compareAt={book.compareAtPriceDzd} />
+          </div>
+        </div>
         {showAdd ? <AddToCartButton book={book} /> : null}
       </div>
-      <Link
-        href={`/livre/${book.slug}`}
-        className="font-display line-clamp-2 text-body font-semibold leading-snug after:absolute after:inset-0 after:content-['']"
-      >
-        {pick(book.title, locale)}
-      </Link>
-      <span className="-mt-1 line-clamp-1 text-caption text-ink-muted">
-        {pick(book.author, locale)}
-      </span>
-      <Price centimes={book.priceDzd} compareAt={book.compareAtPriceDzd} />
     </article>
   );
 }

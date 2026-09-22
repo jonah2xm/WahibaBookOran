@@ -118,8 +118,8 @@ export default function TrackingPage() {
   };
 
   const field =
-    "h-11 w-full rounded-input border border-sand-deep bg-surface px-4 text-body outline-none placeholder:text-ink-faint focus:border-rose";
-  const label = "text-micro uppercase tracking-[0.06em] text-ink-muted";
+    "field-underline";
+  const label = "field-label";
 
   return (
     <main className="flex flex-col gap-4 pb-8">
@@ -149,7 +149,7 @@ export default function TrackingPage() {
             <button
               type="button"
               onClick={search}
-              className="h-11 shrink-0 rounded-full bg-rose px-5 text-body font-semibold text-white"
+              className="h-11 shrink-0 rounded-full bg-rose px-5 text-body font-semibold text-paper"
             >
               {t("submit")}
             </button>
